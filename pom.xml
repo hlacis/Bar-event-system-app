@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>dk.easv</groupId>
-    <artifactId>Ticket_GUI_ONLY</artifactId>
+    <artifactId>Bar-ticket-system</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>Ticket_GUI_ONLY</name>
 
