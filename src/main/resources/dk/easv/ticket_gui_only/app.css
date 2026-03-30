@@ -1,0 +1,509 @@
+/* =========================================================
+   EASV Ticket GUI — app.css (FULL FILE)
+   Copy + paste the whole thing into app.css
+========================================================= */
+
+/* =========================
+   Global
+========================= */
+.root {
+    -fx-font-family: "System";
+    -fx-background-color: #F4F7FB;
+}
+
+/* =========================
+   Login Screen
+========================= */
+.login-root {
+    -fx-background-color: #1F3F8A;
+}
+
+.login-card {
+    -fx-background-color: white;
+    -fx-background-radius: 18;
+    -fx-padding: 28;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.14), 22, 0.25, 0, 8);
+}
+
+.login-title {
+    -fx-font-size: 34px;
+    -fx-font-weight: 900;
+    -fx-padding: 0 0 10 0;
+}
+
+.field-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1D2433;
+}
+
+.login-input {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-color: #D2DAE6;
+    -fx-border-radius: 10;
+    -fx-padding: 14 16 14 16;
+    -fx-font-size: 14px;
+}
+
+.login-input:focused {
+    -fx-border-color: #2A5298;
+    -fx-border-width: 1.5;
+}
+
+/* Login button (use styleClass="login-button") */
+.login-button {
+    -fx-background-color: #FF7A18;
+    -fx-background-insets: 0;
+    -fx-background-radius: 12;
+
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+
+    -fx-text-fill: white;
+    -fx-font-weight: 900;
+
+    /* match input height */
+    -fx-pref-height: 46;
+    -fx-min-height: 46;
+
+    /* full width */
+    -fx-max-width: Infinity;
+
+    -fx-cursor: hand;
+
+    /* remove focus ring */
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.login-button:hover { -fx-background-color: #FF8F3D; }
+.login-button:pressed { -fx-background-color: #F06908; }
+
+/* =========================
+   Buttons (global)
+========================= */
+.primary-button {
+    -fx-background-color: #FF7A18;
+    -fx-text-fill: white;
+    -fx-font-weight: 900;
+    -fx-background-radius: 14;
+    -fx-padding: 16 18 16 18;
+    -fx-cursor: hand;
+}
+.primary-button:hover { -fx-background-color: #FF8F3D; }
+.primary-button:pressed { -fx-background-color: #F06908; }
+
+.secondary-button {
+    -fx-background-color: #EEF3FB;
+    -fx-text-fill: #1D2433;
+    -fx-font-weight: 800;
+    -fx-background-radius: 12;
+    -fx-padding: 10 14 10 14;
+    -fx-cursor: hand;
+
+    -fx-border-color: #D2DAE6;
+    -fx-border-radius: 12;
+}
+.secondary-button:hover { -fx-background-color: #E6EDF8; }
+
+.wide { -fx-max-width: Infinity; }
+
+/* =========================
+   Admin Panel Layout
+========================= */
+.admin-root { -fx-background-color: #F4F7FB; }
+
+.sidebar {
+    -fx-background-color: #1F3F8A;
+    -fx-padding: 14 18 18 18;
+}
+
+.sidebar-title {
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-font-weight: 900;
+    -fx-padding: 6 0 -2 0;
+}
+
+.sidebar-footer {
+    -fx-text-fill: rgba(255,255,255,0.85);
+    -fx-font-weight: 800;
+}
+
+/* Sidebar nav buttons */
+.sidebar .toggle-button.nav-button {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 12;
+
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+
+    -fx-padding: 10 14 10 14;
+    -fx-alignment: CENTER_LEFT;
+    -fx-max-width: Infinity;
+
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+    -fx-font-size: 14px;
+
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.sidebar .toggle-button.nav-button:hover {
+    -fx-background-color: rgba(255,255,255,0.12);
+}
+
+.sidebar .toggle-button.nav-button:selected {
+    -fx-background-color: #FF7A18;
+    -fx-text-fill: white;
+}
+
+/* Topbar */
+.topbar {
+    -fx-background-color: white;
+    -fx-border-color: #E3EAF5;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 14 18 14 18;
+    -fx-alignment: center-left;
+}
+
+.topbar-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: 900;
+}
+
+.pill {
+    -fx-background-color: #EEF3FB;
+    -fx-background-radius: 999;
+    -fx-padding: 8 12 8 12;
+    -fx-font-weight: 800;
+}
+
+/* Content host padding */
+.content-host { -fx-padding: 28; }
+
+/* =========================
+   Pages
+========================= */
+.page {
+    -fx-padding: 10;
+    -fx-background-color: #F4F7FB;
+}
+
+.page-title {
+    -fx-font-size: 34px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #1D2433;
+}
+
+.page-subtitle {
+    -fx-text-fill: #5B677A;
+    -fx-font-size: 13px;
+}
+
+.muted { -fx-text-fill: #5B677A; }
+
+/* Search bar */
+.searchbar { -fx-padding: 10 0 12 0; }
+
+.search-input {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-color: #E3EAF5;
+    -fx-border-radius: 12;
+    -fx-padding: 12 14 12 14;
+    -fx-font-size: 14px;
+}
+
+.search-input:focused {
+    -fx-border-color: #2A5298;
+    -fx-border-width: 1.5;
+}
+
+/* =========================
+   Cards (general)
+========================= */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+
+    -fx-border-color: #E3EAF5;
+    -fx-border-radius: 14;
+
+    -fx-padding: 18 18 18 18;
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 16, 0.2, 0, 6);
+}
+
+.card-title {
+    -fx-text-fill: #1D2433;
+    -fx-font-size: 16px;
+    -fx-font-weight: 900;
+}
+
+.card-subtext { -fx-text-fill: #5B677A; }
+
+/* Button sizing inside cards */
+.card .primary-button {
+    -fx-padding: 10 18 10 18;
+    -fx-background-radius: 12;
+}
+.card .secondary-button {
+    -fx-padding: 10 18 10 18;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+}
+
+/* =========================
+   Users (Grid rows)
+========================= */
+.user-row-grid {
+    -fx-hgap: 18;
+    -fx-alignment: CENTER_LEFT;
+    -fx-min-height: 84;
+}
+
+/* =========================
+   Tags (Coordinator/User/Admin)
+========================= */
+.tag {
+    -fx-background-radius: 999;
+    -fx-padding: 6 12 6 12;
+    -fx-font-weight: 900;
+    -fx-font-size: 12px;
+    -fx-alignment: CENTER;
+}
+
+.tag.coordinator { -fx-background-color: #2D6BFF; -fx-text-fill: white; }
+.tag.user        { -fx-background-color: #E9EEF6; -fx-text-fill: #1D2433; }
+.tag.admin       { -fx-background-color: #D11A2A; -fx-text-fill: white; }
+
+/* =========================
+   Users ScrollPane
+========================= */
+.users-scroll {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.users-scroll > .viewport { -fx-background-color: transparent; }
+.users-list { -fx-background-color: transparent; }
+
+/* Scrollbar (thin like Figma) */
+.users-scroll .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 10;
+}
+.users-scroll .scroll-bar:vertical .track { -fx-background-color: transparent; }
+.users-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: #C9D3E3;
+    -fx-background-radius: 999;
+}
+.users-scroll .scroll-bar:vertical .thumb:hover { -fx-background-color: #AEBBD0; }
+
+.users-scroll .scroll-bar .increment-button,
+.users-scroll .scroll-bar .decrement-button {
+    -fx-padding: 0;
+    -fx-opacity: 0;
+}
+
+/* =========================
+   Assign Coordinators (Figma-like)
+   Use these classes in FXML:
+   - Left small rows: styleClass="card coordinator-card"
+   - Edit button: styleClass="secondary-button edit-button"
+   - Right panel: styleClass="card assign-form"
+   - Save: styleClass="primary-button form-primary"
+   - Cancel: styleClass="secondary-button form-secondary"
+========================= */
+.section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #1D2433;
+}
+
+/* Smaller “mini” coordinator cards */
+.coordinator-card {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+
+    -fx-border-color: #E3EAF5;
+    -fx-border-radius: 14;
+
+    -fx-padding: 16;
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 14, 0.18, 0, 6);
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Make Edit look consistent inside coordinator card */
+.coordinator-card .edit-button {
+    -fx-padding: 10 18 10 18;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+}
+
+/* Right panel card (big form) */
+.assign-form {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+
+    -fx-border-color: #E3EAF5;
+    -fx-border-radius: 14;
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 16, 0.20, 0, 6);
+
+    -fx-min-height: 640;
+}
+
+/* Form buttons sizing */
+.assign-form .form-primary {
+    -fx-padding: 10 20 10 20;
+    -fx-background-radius: 12;
+}
+.assign-form .form-secondary {
+    -fx-padding: 10 20 10 20;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+}
+/* =========================
+   Assign Coordinators (Figma-like)
+========================= */
+
+.section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #1D2433;
+}
+
+/* Left coordinator cards */
+.coordinator-card {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+
+    -fx-border-color: #E3EAF5;
+    -fx-border-radius: 14;
+
+    -fx-padding: 16;
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 14, 0.18, 0, 6);
+    -fx-alignment: CENTER_LEFT;
+}
+
+.edit-button {
+    -fx-padding: 10 18 10 18;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+}
+
+/* Bullet list styling inside cards */
+.assigned-list { -fx-padding: 2 0 0 0; }
+
+.assigned-item {
+    -fx-text-fill: #1D2433;
+    -fx-font-size: 13px;
+}
+
+/* Right panel card */
+.assign-form {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+
+    -fx-border-color: #E3EAF5;
+    -fx-border-radius: 14;
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 16, 0.20, 0, 6);
+    -fx-min-height: 640;
+}
+
+/* Form labels */
+.form-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1D2433;
+}
+
+/* Form controls (ComboBox + TextField) */
+.form-control {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+
+    -fx-border-color: #E3EAF5;
+    -fx-border-radius: 12;
+
+    -fx-padding: 10 12 10 12;
+    -fx-font-size: 13px;
+}
+
+/* Make readonly role field look like the Figma grey pill */
+.readonly-field {
+    -fx-background-color: #E9EEF6;
+    -fx-border-color: transparent;
+    -fx-font-weight: 800;
+}
+
+/* Assign Events box */
+.form-box {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+
+    -fx-border-color: #E3EAF5;
+    -fx-border-radius: 12;
+
+    -fx-padding: 12;
+}
+
+/* Bottom form buttons */
+.form-primary {
+    -fx-padding: 10 20 10 20;
+    -fx-background-radius: 12;
+}
+
+.form-secondary {
+    -fx-padding: 10 20 10 20;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+}
+/* =========================
+   Events: Bin (delete) icon button
+========================= */
+
+.icon-button {
+    -fx-min-width: 44;
+    -fx-pref-width: 44;
+    -fx-max-width: 44;
+
+    -fx-min-height: 40;
+    -fx-pref-height: 40;
+
+    -fx-background-color: #EEF3FB;
+    -fx-background-radius: 12;
+
+    -fx-border-color: #D2DAE6;
+    -fx-border-radius: 12;
+
+    -fx-font-size: 16px;
+    -fx-font-weight: 900;
+
+    -fx-cursor: hand;
+
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.icon-button:hover {
+    -fx-background-color: #E6EDF8;
+}
+
+.danger-button {
+    -fx-text-fill: #D11A2A;
+}
+
+.danger-button:hover {
+    -fx-background-color: #FDECEE;
+    -fx-border-color: #F5B8BF;
+}

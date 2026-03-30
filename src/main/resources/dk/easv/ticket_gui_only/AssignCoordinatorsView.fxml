@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import java.lang.String?>
+
+<HBox xmlns="http://javafx.com/javafx/25"
+      xmlns:fx="http://javafx.com/fxml/1"
+      spacing="28"
+      styleClass="page">
+
+    <!-- LEFT COLUMN -->
+    <VBox spacing="14" HBox.hgrow="ALWAYS">
+
+        <Label text="Assign Coordinators" styleClass="page-title"/>
+
+        <Label text="Current Coordinators" styleClass="section-title"/>
+
+        <VBox spacing="16">
+
+            <!-- Coordinator card 1 -->
+            <HBox spacing="14">
+                <styleClass>
+                    <String fx:value="coordinator-card"/>
+                </styleClass>
+
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="Sarah Johnson" styleClass="card-title"/>
+                    <Label text="sarah.johnson@easv.dk" styleClass="card-subtext"/>
+
+                    <Label text="Assigned to:" styleClass="muted"/>
+                    <VBox spacing="4" styleClass="assigned-list">
+                        <Label text="• Tech Conference 2026" styleClass="assigned-item"/>
+                        <Label text="• Music Festival" styleClass="assigned-item"/>
+                        <Label text="• Business Networking Event" styleClass="assigned-item"/>
+                    </VBox>
+                </VBox>
+
+                <Button text="Edit">
+                    <styleClass>
+                        <String fx:value="secondary-button"/>
+                        <String fx:value="edit-button"/>
+                    </styleClass>
+                </Button>
+            </HBox>
+
+            <!-- Coordinator card 2 -->
+            <HBox spacing="14">
+                <styleClass>
+                    <String fx:value="coordinator-card"/>
+                </styleClass>
+
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="Emma Nielsen" styleClass="card-title"/>
+                    <Label text="emma.nielsen@easv.dk" styleClass="card-subtext"/>
+
+                    <Label text="Assigned to:" styleClass="muted"/>
+                    <VBox spacing="4" styleClass="assigned-list">
+                        <Label text="• Music Festival" styleClass="assigned-item"/>
+                        <Label text="• Art Exhibition Opening" styleClass="assigned-item"/>
+                    </VBox>
+                </VBox>
+
+                <Button text="Edit">
+                    <styleClass>
+                        <String fx:value="secondary-button"/>
+                        <String fx:value="edit-button"/>
+                    </styleClass>
+                </Button>
+            </HBox>
+
+        </VBox>
+    </VBox>
+
+    <!-- RIGHT COLUMN (FORM CARD) -->
+    <VBox spacing="14" prefWidth="520" minWidth="520">
+        <styleClass>
+            <String fx:value="assign-form"/>
+        </styleClass>
+
+        <padding>
+            <Insets top="18" right="18" bottom="18" left="18"/>
+        </padding>
+
+        <Label text="Assign New Coordinator" styleClass="section-title"/>
+
+        <!-- Select User -->
+        <VBox spacing="8">
+            <Label text="Select User" styleClass="form-label"/>
+            <ComboBox promptText="Choose a user...">
+                <styleClass>
+                    <String fx:value="form-control"/>
+                </styleClass>
+            </ComboBox>
+        </VBox>
+
+        <!-- Assign Role -->
+        <VBox spacing="8">
+            <Label text="Assign Role" styleClass="form-label"/>
+            <TextField text="Coordinator" editable="false">
+                <styleClass>
+                    <String fx:value="form-control"/>
+                    <String fx:value="readonly-field"/>
+                </styleClass>
+            </TextField>
+        </VBox>
+
+        <!-- Assign Events -->
+        <VBox spacing="8">
+            <Label text="Assign Events" styleClass="form-label"/>
+
+            <VBox spacing="10">
+                <styleClass>
+                    <String fx:value="form-box"/>
+                </styleClass>
+
+                <CheckBox text="Tech Conference 2026"/>
+                <CheckBox text="Music Festival"/>
+                <CheckBox text="Business Networking Event"/>
+                <CheckBox text="Art Exhibition Opening"/>
+            </VBox>
+        </VBox>
+
+        <Region VBox.vgrow="ALWAYS"/>
+
+        <!-- Bottom actions -->
+        <HBox spacing="12">
+            <Button text="Save">
+                <styleClass>
+                    <String fx:value="primary-button"/>
+                    <String fx:value="form-primary"/>
+                </styleClass>
+            </Button>
+
+            <Button text="Cancel">
+                <styleClass>
+                    <String fx:value="secondary-button"/>
+                    <String fx:value="form-secondary"/>
+                </styleClass>
+            </Button>
+        </HBox>
+
+    </VBox>
+
+</HBox>

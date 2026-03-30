@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import java.lang.String?>
+
+<VBox xmlns="http://javafx.com/javafx/25"
+      xmlns:fx="http://javafx.com/fxml/1"
+      spacing="14"
+      styleClass="page">
+
+    <Label text="User Management" styleClass="page-title"/>
+
+    <Label text="Admins manage users and coordinator access. Admins cannot create events."
+           styleClass="page-subtitle"/>
+
+    <!-- Search -->
+    <HBox spacing="10" styleClass="searchbar">
+
+        <TextField promptText="Search users..." prefWidth="520" styleClass="search-input"/>
+    </HBox>
+
+    <!-- SCROLL ONLY THE LIST -->
+    <ScrollPane fitToWidth="true"
+                hbarPolicy="NEVER"
+                vbarPolicy="AS_NEEDED"
+                styleClass="users-scroll">
+
+        <content>
+            <VBox spacing="18" styleClass="users-list">
+                <padding>
+                    <Insets top="2" right="8" bottom="18" left="2"/>
+                </padding>
+
+                <!-- ROW 1 -->
+                <GridPane>
+                    <styleClass>
+                        <String fx:value="card"/>
+                        <String fx:value="user-row-grid"/>
+                    </styleClass>
+
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10"/>
+                        <ColumnConstraints prefWidth="170" halignment="CENTER"/>
+                        <ColumnConstraints prefWidth="90" halignment="LEFT"/>
+                        <ColumnConstraints prefWidth="210" halignment="RIGHT"/>
+                    </columnConstraints>
+
+                    <VBox spacing="2" GridPane.columnIndex="0" GridPane.valignment="CENTER">
+                        <Label text="Sarah Johnson" styleClass="card-title"/>
+                        <Label text="sarah.johnson@easv.dk" styleClass="card-subtext"/>
+                    </VBox>
+
+                    <Label text="Coordinator" GridPane.columnIndex="1" GridPane.valignment="CENTER">
+                        <styleClass>
+                            <String fx:value="tag"/>
+                            <String fx:value="coordinator"/>
+                        </styleClass>
+                    </Label>
+
+                    <Label text="3 events" styleClass="muted" GridPane.columnIndex="2" GridPane.valignment="CENTER"/>
+
+                    <Button text="Remove Coordinator" styleClass="secondary-button"
+                            GridPane.columnIndex="3" GridPane.valignment="CENTER"/>
+                </GridPane>
+
+                <!-- ROW 2 -->
+                <GridPane>
+                    <styleClass>
+                        <String fx:value="card"/>
+                        <String fx:value="user-row-grid"/>
+                    </styleClass>
+
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10"/>
+                        <ColumnConstraints prefWidth="170" halignment="CENTER"/>
+                        <ColumnConstraints prefWidth="90" halignment="LEFT"/>
+                        <ColumnConstraints prefWidth="210" halignment="RIGHT"/>
+                    </columnConstraints>
+
+                    <VBox spacing="2" GridPane.columnIndex="0" GridPane.valignment="CENTER">
+                        <Label text="Michael Chen" styleClass="card-title"/>
+                        <Label text="michael.chen@easv.dk" styleClass="card-subtext"/>
+                    </VBox>
+
+                    <Label text="User" GridPane.columnIndex="1" GridPane.valignment="CENTER">
+                        <styleClass>
+                            <String fx:value="tag"/>
+                            <String fx:value="user"/>
+                        </styleClass>
+                    </Label>
+
+                    <Label text="0 events" styleClass="muted" GridPane.columnIndex="2" GridPane.valignment="CENTER"/>
+
+                    <Button text="Assign Coordinator" styleClass="primary-button"
+                            GridPane.columnIndex="3" GridPane.valignment="CENTER"/>
+                </GridPane>
+
+                <!-- ROW 3 -->
+                <GridPane>
+                    <styleClass>
+                        <String fx:value="card"/>
+                        <String fx:value="user-row-grid"/>
+                    </styleClass>
+
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10"/>
+                        <ColumnConstraints prefWidth="170" halignment="CENTER"/>
+                        <ColumnConstraints prefWidth="90" halignment="LEFT"/>
+                        <ColumnConstraints prefWidth="210" halignment="RIGHT"/>
+                    </columnConstraints>
+
+                    <VBox spacing="2" GridPane.columnIndex="0" GridPane.valignment="CENTER">
+                        <Label text="Emma Nielsen" styleClass="card-title"/>
+                        <Label text="emma.nielsen@easv.dk" styleClass="card-subtext"/>
+                    </VBox>
+
+                    <Label text="Coordinator" GridPane.columnIndex="1" GridPane.valignment="CENTER">
+                        <styleClass>
+                            <String fx:value="tag"/>
+                            <String fx:value="coordinator"/>
+                        </styleClass>
+                    </Label>
+
+                    <Label text="5 events" styleClass="muted" GridPane.columnIndex="2" GridPane.valignment="CENTER"/>
+
+                    <Button text="Remove Coordinator" styleClass="secondary-button"
+                            GridPane.columnIndex="3" GridPane.valignment="CENTER"/>
+                </GridPane>
+
+                <!-- ROW 4 -->
+                <GridPane>
+                    <styleClass>
+                        <String fx:value="card"/>
+                        <String fx:value="user-row-grid"/>
+                    </styleClass>
+
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10"/>
+                        <ColumnConstraints prefWidth="170" halignment="CENTER"/>
+                        <ColumnConstraints prefWidth="90" halignment="LEFT"/>
+                        <ColumnConstraints prefWidth="210" halignment="RIGHT"/>
+                    </columnConstraints>
+
+                    <VBox spacing="2" GridPane.columnIndex="0" GridPane.valignment="CENTER">
+                        <Label text="David Schmidt" styleClass="card-title"/>
+                        <Label text="david.schmidt@easv.dk" styleClass="card-subtext"/>
+                    </VBox>
+
+                    <Label text="User" GridPane.columnIndex="1" GridPane.valignment="CENTER">
+                        <styleClass>
+                            <String fx:value="tag"/>
+                            <String fx:value="user"/>
+                        </styleClass>
+                    </Label>
+
+                    <Label text="0 events" styleClass="muted" GridPane.columnIndex="2" GridPane.valignment="CENTER"/>
+
+                    <Button text="Assign Coordinator" styleClass="primary-button"
+                            GridPane.columnIndex="3" GridPane.valignment="CENTER"/>
+                </GridPane>
+
+                <!-- ROW 5 -->
+                <GridPane>
+                    <styleClass>
+                        <String fx:value="card"/>
+                        <String fx:value="user-row-grid"/>
+                    </styleClass>
+
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10"/>
+                        <ColumnConstraints prefWidth="170" halignment="CENTER"/>
+                        <ColumnConstraints prefWidth="90" halignment="LEFT"/>
+                        <ColumnConstraints prefWidth="210" halignment="RIGHT"/>
+                    </columnConstraints>
+
+                    <VBox spacing="2" GridPane.columnIndex="0" GridPane.valignment="CENTER">
+                        <Label text="Anna Larsen" styleClass="card-title"/>
+                        <Label text="anna.larsen@easv.dk" styleClass="card-subtext"/>
+                    </VBox>
+
+                    <Label text="Admin" GridPane.columnIndex="1" GridPane.valignment="CENTER">
+                        <styleClass>
+                            <String fx:value="tag"/>
+                            <String fx:value="admin"/>
+                        </styleClass>
+                    </Label>
+
+                    <Label text="0 events" styleClass="muted" GridPane.columnIndex="2" GridPane.valignment="CENTER"/>
+
+                    <Label text="No actions" styleClass="muted"
+                           GridPane.columnIndex="3" GridPane.valignment="CENTER"/>
+                </GridPane>
+
+                <!-- ROW 6 -->
+                <GridPane>
+                    <styleClass>
+                        <String fx:value="card"/>
+                        <String fx:value="user-row-grid"/>
+                    </styleClass>
+
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10"/>
+                        <ColumnConstraints prefWidth="170" halignment="CENTER"/>
+                        <ColumnConstraints prefWidth="90" halignment="LEFT"/>
+                        <ColumnConstraints prefWidth="210" halignment="RIGHT"/>
+                    </columnConstraints>
+
+                    <VBox spacing="2" GridPane.columnIndex="0" GridPane.valignment="CENTER">
+                        <Label text="Thomas Andersen" styleClass="card-title"/>
+                        <Label text="thomas.andersen@easv.dk" styleClass="card-subtext"/>
+                    </VBox>
+
+                    <Label text="User" GridPane.columnIndex="1" GridPane.valignment="CENTER">
+                        <styleClass>
+                            <String fx:value="tag"/>
+                            <String fx:value="user"/>
+                        </styleClass>
+                    </Label>
+
+                    <Label text="0 events" styleClass="muted" GridPane.columnIndex="2" GridPane.valignment="CENTER"/>
+
+                    <Button text="Assign Coordinator" styleClass="primary-button"
+                            GridPane.columnIndex="3" GridPane.valignment="CENTER"/>
+                </GridPane>
+
+            </VBox>
+        </content>
+    </ScrollPane>
+
+</VBox>
