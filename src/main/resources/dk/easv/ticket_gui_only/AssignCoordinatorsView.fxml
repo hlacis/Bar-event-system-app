@@ -112,7 +112,7 @@
             </TextField>
         </VBox>
 
-        <!-- Assign Events -->
+        <!-- Assign Event -->
         <VBox spacing="8">
             <Label text="Assign Events" styleClass="form-label"/>
 
