@@ -1,4 +1,4 @@
-package dk.easv.ticket_gui_only.GUI;
+package dk.easv.gui;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;

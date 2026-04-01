@@ -1,4 +1,4 @@
-package dk.easv.ticket_gui_only.GUI;
+package dk.easv.gui;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -9,8 +9,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.control.ToggleButton;
-import javafx.fxml.FXML;
-
 
 
 public class AdminController {

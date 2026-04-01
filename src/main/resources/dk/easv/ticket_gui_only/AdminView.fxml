@@ -13,7 +13,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/25"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="dk.easv.ticket_gui_only.GUI.AdminController"
+            fx:controller="dk.easv.gui.AdminController"
             styleClass="admin-root">
 
     <!-- LEFT SIDEBAR (FULL HEIGHT) -->

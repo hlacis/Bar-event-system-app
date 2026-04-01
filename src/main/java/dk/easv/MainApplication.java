@@ -1,4 +1,4 @@
-package dk.easv.ticket_gui_only;
+package dk.easv;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -18,7 +18,7 @@ public class MainApplication extends Application {
         String css = MainApplication.class.getResource("/dk/easv/ticket_gui_only/app.css").toExternalForm();
         scene.getStylesheets().add(css);
 
-        stage.setTitle("EASV Ticket GUI");
+        stage.setTitle("EASV Ticket gui");
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();

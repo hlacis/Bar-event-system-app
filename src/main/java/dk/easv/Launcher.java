@@ -1,4 +1,4 @@
-package dk.easv.ticket_gui_only;
+package dk.easv;
 
 public class Launcher {
     public static void main(String[] args) {

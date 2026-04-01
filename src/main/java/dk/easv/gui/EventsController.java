@@ -1,4 +1,4 @@
-package dk.easv.ticket_gui_only.GUI;
+package dk.easv.gui;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -31,7 +31,7 @@ public class EventsController {
     @FXML
     private VBox eventsList;
 
-    // Mock data (GUI-only prototype)
+    // Mock data (gui-only prototype)
     private final java.util.List<EventCardData> mockEvents = new java.util.ArrayList<>(List.of(
             new EventCardData("Tech Conference 2026",
                     "2026-03-15 at 09:00 AM • Copenhagen Convention Center",
@@ -46,7 +46,7 @@ public class EventsController {
 
     @FXML
     public void initialize() {
-        // Dynamically generate GUI components (requirement!)
+        // Dynamically generate gui components (requirement!)
         eventsList.getChildren().clear();
 
         for (EventCardData e : mockEvents) {
@@ -103,7 +103,7 @@ public class EventsController {
         }
 
         if (current instanceof HBox card && eventsList != null) {
-            eventsList.getChildren().remove(card); // GUI-only delete
+            eventsList.getChildren().remove(card); // gui-only delete
         }
     }
 
