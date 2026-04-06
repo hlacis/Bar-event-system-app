@@ -23,28 +23,28 @@ public class AdminController {
     @FXML
     public void initialize() {
         usersBtn.setSelected(true);
-        loadIntoContent("/dk/easv/ticket_gui_only/UsersView.fxml");
+        loadIntoContent("/dk/easv/gui/UsersView.fxml");
     }
 
 
     public void showUsers() {
         usersBtn.setSelected(true);
-        loadIntoContent("/dk/easv/ticket_gui_only/UsersView.fxml");
+        loadIntoContent("/dk/easv/gui/UsersView.fxml");
     }
 
     public void showAssign() {
         assignBtn.setSelected(true);
-        loadIntoContent("/dk/easv/ticket_gui_only/AssignCoordinatorsView.fxml");
+        loadIntoContent("/dk/easv/gui/AssignCoordinatorsView.fxml");
     }
 
     public void showEvents() {
         eventsBtn.setSelected(true);
-        loadIntoContent("/dk/easv/ticket_gui_only/EventsView.fxml");
+        loadIntoContent("/dk/easv/gui/EventsView.fxml");
     }
 
     public void showSettings() {
         settingsBtn.setSelected(true);
-        loadIntoContent("/dk/easv/ticket_gui_only/SettingsView.fxml");
+        loadIntoContent("/dk/easv/gui/SettingsView.fxml");
     }
 
 
@@ -59,7 +59,7 @@ public class AdminController {
 
     public void logout(ActionEvent event) throws Exception {
         Parent loginRoot = FXMLLoader.load(
-                getClass().getResource("/dk/easv/ticket_gui_only/LoginView.fxml")
+                getClass().getResource("/dk/easv/gui/LoginView.fxml")
         );
 
         Scene scene = ((Node) event.getSource()).getScene();

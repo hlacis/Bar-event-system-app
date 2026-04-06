@@ -1,16 +1,10 @@
 package dk.easv;
 
-import dk.easv.be.Event;
-import dk.easv.dal.ConnectionManager;
-import dk.easv.dal.dao.EventDAO;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import java.sql.Connection;
-import java.time.LocalDateTime;
 
 public class MainApplication extends Application {
 
@@ -46,12 +40,12 @@ public class MainApplication extends Application {
 
          */
 
-        FXMLLoader loader = new FXMLLoader(MainApplication.class.getResource("/dk/easv/ticket_gui_only/LoginView.fxml"));
+        FXMLLoader loader = new FXMLLoader(MainApplication.class.getResource("/dk/easv/gui/LoginView.fxml"));
         Parent root = loader.load();
 
         Scene scene = new Scene(root);
 
-        String css = MainApplication.class.getResource("/dk/easv/ticket_gui_only/app.css").toExternalForm();
+        String css = MainApplication.class.getResource("/dk/easv/gui/app.css").toExternalForm();
         scene.getStylesheets().add(css);
 
         stage.setTitle("EASV Ticket gui");

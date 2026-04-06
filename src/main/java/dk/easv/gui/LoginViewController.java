@@ -12,7 +12,7 @@ public class LoginViewController {
     public void onLoginClicked(ActionEvent event) throws Exception {
 
         Parent adminRoot = FXMLLoader.load(
-                getClass().getResource("/dk/easv/ticket_gui_only/AdminView.fxml")
+                getClass().getResource("/dk/easv/gui/AdminView.fxml")
         );
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
