@@ -1,3 +1,4 @@
+src/main/java/dk/easv/dal/ConnectionManager.java
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
