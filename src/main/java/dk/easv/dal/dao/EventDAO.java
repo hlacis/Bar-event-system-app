@@ -4,10 +4,12 @@ import dk.easv.be.Event;
 import dk.easv.dal.ConnectionManager;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EventDAO {
 
-    private ConnectionManager cm = new ConnectionManager();
+    private final ConnectionManager cm = new ConnectionManager();
 
     public Event createEvent(Event event) throws Exception {
         String sql = "INSERT INTO Event (Name, Location, StartTime, EndTime, Notes) VALUES (?, ?, ?, ?, ?)";
@@ -19,10 +21,11 @@ public class EventDAO {
             stmt.setString(2, event.getLocation());
             stmt.setTimestamp(3, Timestamp.valueOf(event.getStartTime()));
 
-            if (event.getEndTime() != null)
+            if (event.getEndTime() != null) {
                 stmt.setTimestamp(4, Timestamp.valueOf(event.getEndTime()));
-            else
+            } else {
                 stmt.setNull(4, Types.TIMESTAMP);
+            }
 
             stmt.setString(5, event.getNotes());
 
@@ -34,6 +37,52 @@ public class EventDAO {
             }
 
             return event;
+        }
+    }
+
+    public List<Event> getAllEvents() throws Exception {
+        List<Event> events = new ArrayList<>();
+
+        String sql = "SELECT Id, Name, Location, StartTime, EndTime, Notes FROM Event ORDER BY StartTime";
+
+        try (Connection conn = cm.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                int id = rs.getInt("Id");
+                String name = rs.getString("Name");
+                String location = rs.getString("Location");
+
+                Timestamp startTs = rs.getTimestamp("StartTime");
+                Timestamp endTs = rs.getTimestamp("EndTime");
+
+                String notes = rs.getString("Notes");
+
+                Event event = new Event(
+                        id,
+                        name,
+                        location,
+                        startTs != null ? startTs.toLocalDateTime() : null,
+                        endTs != null ? endTs.toLocalDateTime() : null,
+                        notes
+                );
+
+                events.add(event);
+            }
+        }
+
+        return events;
+    }
+
+    public void deleteEvent(int eventId) throws Exception {
+        String sql = "DELETE FROM Event WHERE Id = ?";
+
+        try (Connection conn = cm.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, eventId);
+            stmt.executeUpdate();
         }
     }
 }

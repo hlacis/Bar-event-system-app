@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
@@ -15,12 +17,24 @@
     <Label text="Admins manage users and coordinator access. Admins cannot create events."
            styleClass="page-subtitle"/>
 
-    <!-- PROOF BUTTON -->
     <HBox>
-        <Button text="Generate Event" onAction="#generateEvent"
+        <Button text="Create event" onAction="#generateEvent"
                 styleClass="primary-button"/>
     </HBox>
 
-    <VBox fx:id="eventsList" spacing="12"/>
+    <ScrollPane fitToWidth="true"
+                hbarPolicy="NEVER"
+                vbarPolicy="AS_NEEDED"
+                styleClass="users-scroll"
+                VBox.vgrow="ALWAYS">
+
+        <content>
+            <VBox fx:id="eventsList" spacing="12" styleClass="users-list">
+                <padding>
+                    <Insets top="2" right="8" bottom="18" left="2"/>
+                </padding>
+            </VBox>
+        </content>
+    </ScrollPane>
 
 </VBox>
