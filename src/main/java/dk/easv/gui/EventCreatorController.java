@@ -7,7 +7,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 
@@ -17,6 +19,12 @@ import java.time.LocalDateTime;
 public class EventCreatorController {
 
     private Event eventToEdit;
+
+    @FXML
+    private Label titleLabel;
+
+    @FXML
+    private Button saveButton;
 
     @FXML
     private TextField nameField;
@@ -40,6 +48,8 @@ public class EventCreatorController {
         try {
             String name = nameField.getText().trim();
             String location = locationField.getText().trim();
+            String notes = notesField.getText().trim();
+
             LocalDate startDate = startDatePicker.getValue();
             LocalDate endDate = endDatePicker.getValue();
 
@@ -47,28 +57,24 @@ public class EventCreatorController {
             LocalDateTime endTime = endDate != null ? endDate.atTime(23, 59) : null;
 
             if (eventToEdit == null) {
-                // To create
-                Event event = new Event(0, name, location, startTime, endTime, "");
-
+                Event event = new Event(0, name, location, startTime, endTime, notes);
                 eventManager.createEvent(event);
-
                 showInfo("Success", "Event created successfully.");
-
             } else {
-                // To edit
                 eventToEdit.setName(name);
                 eventToEdit.setLocation(location);
                 eventToEdit.setStartTime(startTime);
                 eventToEdit.setEndTime(endTime);
+                eventToEdit.setNotes(notes);
 
                 eventManager.updateEvent(eventToEdit);
-
                 showInfo("Success", "Event updated successfully.");
             }
 
             loadEventsView();
 
         } catch (Exception e) {
+            e.printStackTrace();
             showError(e.getMessage());
         }
     }
@@ -128,8 +134,19 @@ public class EventCreatorController {
     public void setEvent(Event event) {
         this.eventToEdit = event;
 
+        titleLabel.setText("Edit Event");
+        saveButton.setText("Update Event");
+
         nameField.setText(event.getName());
         locationField.setText(event.getLocation());
         notesField.setText(event.getNotes());
+
+        if (event.getStartTime() != null) {
+            startDatePicker.setValue(event.getStartTime().toLocalDate());
+        }
+
+        if (event.getEndTime() != null) {
+            endDatePicker.setValue(event.getEndTime().toLocalDate());
+        }
     }
 }
