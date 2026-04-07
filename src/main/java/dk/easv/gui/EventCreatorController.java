@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 
 public class EventCreatorController {
 
+    private Event eventToEdit;
+
     @FXML
     private TextField nameField;
 
@@ -27,6 +29,9 @@ public class EventCreatorController {
 
     @FXML
     private TextField locationField;
+
+    @FXML
+    private TextField notesField;
 
     private final EventManager eventManager = new EventManager();
 
@@ -41,11 +46,26 @@ public class EventCreatorController {
             LocalDateTime startTime = startDate != null ? startDate.atStartOfDay() : null;
             LocalDateTime endTime = endDate != null ? endDate.atTime(23, 59) : null;
 
-            Event event = new Event(0, name, location, startTime, endTime, "");
+            if (eventToEdit == null) {
+                // To create
+                Event event = new Event(0, name, location, startTime, endTime, "");
 
-            eventManager.createEvent(event);
+                eventManager.createEvent(event);
 
-            showInfo("Success", "Event created successfully.");
+                showInfo("Success", "Event created successfully.");
+
+            } else {
+                // To edit
+                eventToEdit.setName(name);
+                eventToEdit.setLocation(location);
+                eventToEdit.setStartTime(startTime);
+                eventToEdit.setEndTime(endTime);
+
+                eventManager.updateEvent(eventToEdit);
+
+                showInfo("Success", "Event updated successfully.");
+            }
+
             loadEventsView();
 
         } catch (Exception e) {
@@ -103,5 +123,13 @@ public class EventCreatorController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    public void setEvent(Event event) {
+        this.eventToEdit = event;
+
+        nameField.setText(event.getName());
+        locationField.setText(event.getLocation());
+        notesField.setText(event.getNotes());
     }
 }

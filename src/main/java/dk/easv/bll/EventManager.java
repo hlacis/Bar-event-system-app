@@ -30,4 +30,7 @@ public class EventManager {
 
         eventDAO.deleteEvent(event.getId());
     }
+    public void updateEvent(Event event) throws Exception {
+        eventDAO.updateEvent(event);
+    }
 }

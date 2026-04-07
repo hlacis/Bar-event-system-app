@@ -49,6 +49,32 @@ public class EventsController {
         }
     }
 
+    // 🔥 NEW METHOD (EDIT)
+    private void openEditView(Event event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/dk/easv/gui/EventsCreator.fxml")
+            );
+
+            Parent creatorView = loader.load();
+
+            // Get controller of creator view
+            EventCreatorController controller = loader.getController();
+
+            // Pass selected event to edit
+            controller.setEvent(event);
+
+            StackPane contentHost = findContentHost(eventsList);
+            if (contentHost != null) {
+                contentHost.getChildren().setAll(creatorView);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Could not open edit view.");
+        }
+    }
+
     private void loadEventsFromDatabaseAsync() {
         eventsList.getChildren().clear();
 
@@ -112,10 +138,15 @@ public class EventsController {
         assignBtn.getStyleClass().add("secondary-button");
         assignBtn.setOnAction(evt -> showInfo("Assign Coordinator", event.getName()));
 
+        // edit button added
+        Button editBtn = new Button("Edit");
+        editBtn.getStyleClass().add("secondary-button");
+        editBtn.setOnAction(evt -> openEditView(event));
+
         Button deleteBtn = new Button("🗑");
         deleteBtn.getStyleClass().addAll("icon-button", "danger-button");
 
-        HBox card = new HBox(12, left, spacer, viewDetailsBtn, assignBtn, deleteBtn);
+        HBox card = new HBox(12, left, spacer, viewDetailsBtn, assignBtn, editBtn, deleteBtn);
         card.setAlignment(Pos.CENTER_LEFT);
         card.getStyleClass().add("card");
 
