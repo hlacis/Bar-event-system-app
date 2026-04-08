@@ -11,12 +11,11 @@ public class EventCoordinatorDAO {
 
     private final ConnectionManager connectionManager;
 
-    // ✅ Constructor FIRST
     public EventCoordinatorDAO() {
         connectionManager = new ConnectionManager();
     }
 
-    // ✅ Then methods
+
     public EventCoordinator createCoordinator(EventCoordinator coordinator) throws Exception {
         String sql = "INSERT INTO EventCoordinator (Name, Email) VALUES (?, ?)";
 
