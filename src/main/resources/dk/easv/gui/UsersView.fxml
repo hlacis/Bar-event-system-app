@@ -182,8 +182,8 @@
                     </columnConstraints>
 
                     <VBox spacing="2" GridPane.columnIndex="0" GridPane.valignment="CENTER">
-                        <Label text="Anna Larsen" styleClass="card-title"/>
-                        <Label text="anna.larsen@easv.dk" styleClass="card-subtext"/>
+                        <Label text="Jakub Hlacik" styleClass="card-title"/>
+                        <Label text="test.project@easv.dk" styleClass="card-subtext"/>
                     </VBox>
 
                     <Label text="Admin" GridPane.columnIndex="1" GridPane.valignment="CENTER">

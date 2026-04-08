@@ -14,7 +14,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -119,7 +118,7 @@ public class EventsController {
 
         Button assignBtn = new Button("Assign Coordinator");
         assignBtn.getStyleClass().add("secondary-button");
-        assignBtn.setOnAction(evt -> showInfo("Assign Coordinator", event.getName()));
+        assignBtn.setOnAction(evt -> showInfo("Assign E.Coordinator", event.getName()));
 
         Button editBtn = new Button("Edit");
         editBtn.getStyleClass().add("secondary-button");
