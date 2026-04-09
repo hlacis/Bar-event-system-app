@@ -14,7 +14,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EventsController {
@@ -54,22 +56,42 @@ public class EventsController {
         loadingLabel.getStyleClass().add("muted");
         eventsList.getChildren().add(loadingLabel);
 
-        Task<List<Event>> loadTask = new Task<>() {
+        Task<List<EventCardViewData>> loadTask = new Task<>() {
             @Override
-            protected List<Event> call() throws Exception {
-                return eventManager.getAllEvents();
+            protected List<EventCardViewData> call() throws Exception {
+                List<Event> events = eventManager.getAllEvents();
+                List<EventCardViewData> cardDataList = new ArrayList<>();
+
+                for (Event event : events) {
+                    List<String> coordinatorNames = eventManager.getCoordinatorNamesForEvent(event.getId());
+
+                    String coordinatorText;
+                    if (coordinatorNames.isEmpty()) {
+                        coordinatorText = "Coordinator: Not assigned";
+                    } else {
+                        coordinatorText = "Coordinator: " + String.join(", ", coordinatorNames);
+                    }
+
+                    String notesText = (event.getNotes() == null || event.getNotes().isBlank())
+                            ? "Note: None"
+                            : "Note: " + event.getNotes();
+
+                    cardDataList.add(new EventCardViewData(event, coordinatorText, notesText));
+                }
+
+                return cardDataList;
             }
         };
 
         loadTask.setOnSucceeded(workerStateEvent -> {
-            List<Event> events = loadTask.getValue();
+            List<EventCardViewData> cardDataList = loadTask.getValue();
             eventsList.getChildren().clear();
 
-            for (Event event : events) {
-                eventsList.getChildren().add(createEventCard(event));
+            for (EventCardViewData data : cardDataList) {
+                eventsList.getChildren().add(createEventCard(data));
             }
 
-            if (events.isEmpty()) {
+            if (cardDataList.isEmpty()) {
                 Label emptyLabel = new Label("No events found.");
                 emptyLabel.getStyleClass().add("muted");
                 eventsList.getChildren().add(emptyLabel);
@@ -87,21 +109,19 @@ public class EventsController {
         thread.start();
     }
 
-    private HBox createEventCard(Event event) {
+    private HBox createEventCard(EventCardViewData data) {
+        Event event = data.event();
+
         Label title = new Label(event.getName());
         title.getStyleClass().add("card-title");
 
         Label details = new Label(formatEventDetails(event));
         details.getStyleClass().add("card-subtext");
 
-        Label coordinatorLabel = new Label("Coordinator: Not assigned");
+        Label coordinatorLabel = new Label(data.coordinatorText());
         coordinatorLabel.getStyleClass().add("muted");
 
-        String notesText = (event.getNotes() == null || event.getNotes().isBlank())
-                ? "Note: None"
-                : "Note: " + event.getNotes();
-
-        Label notesLabel = new Label(notesText);
+        Label notesLabel = new Label(data.notesText());
         notesLabel.getStyleClass().add("muted");
 
         HBox bottomInfoRow = new HBox(24, coordinatorLabel, notesLabel);
@@ -118,7 +138,7 @@ public class EventsController {
 
         Button assignBtn = new Button("Assign Coordinator");
         assignBtn.getStyleClass().add("secondary-button");
-        assignBtn.setOnAction(evt -> showInfo("Assign E.Coordinator", event.getName()));
+        assignBtn.setOnAction(evt -> openAssignCoordinatorView());
 
         Button editBtn = new Button("Edit");
         editBtn.getStyleClass().add("secondary-button");
@@ -134,6 +154,23 @@ public class EventsController {
         deleteBtn.setOnAction(evt -> deleteEventFromDatabaseAndUI(event, card, deleteBtn));
 
         return card;
+    }
+
+    private void openAssignCoordinatorView() {
+        try {
+            Parent assignView = FXMLLoader.load(
+                    getClass().getResource("/dk/easv/gui/AssignCoordinatorsView.fxml")
+            );
+
+            StackPane contentHost = findContentHost(eventsList);
+            if (contentHost != null) {
+                contentHost.getChildren().setAll(assignView);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Could not open Assign Coordinators view.");
+        }
     }
 
     private void openEditView(Event event) {
@@ -241,4 +278,6 @@ public class EventsController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    private record EventCardViewData(Event event, String coordinatorText, String notesText) {}
 }
