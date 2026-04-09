@@ -15,7 +15,7 @@
       spacing="14"
       styleClass="page">
 
-    <Label text="Create Event" styleClass="page-title"/>
+    <Label fx:id="titleLabel" text="Create Event" styleClass="page-title"/>
     <Label text="Fill in the event details below." styleClass="page-subtitle"/>
 
     <VBox spacing="12" styleClass="card" maxWidth="560">
@@ -35,8 +35,11 @@
         <Label text="Location" styleClass="field-label"/>
         <TextField fx:id="locationField" promptText="Enter location..." styleClass="search-input"/>
 
+        <Label text="Notes" styleClass="field-label"/>
+        <TextField fx:id="notesField" promptText="Enter notes..." styleClass="search-input"/>
+
         <HBox spacing="12">
-            <Button text="Save Event" onAction="#saveEvent" styleClass="primary-button"/>
+            <Button fx:id="saveButton" text="Save Event" onAction="#saveEvent" styleClass="primary-button"/>
             <Button text="Cancel" onAction="#cancel" styleClass="secondary-button"/>
         </HBox>
     </VBox>

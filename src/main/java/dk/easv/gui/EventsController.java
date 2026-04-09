@@ -6,7 +6,6 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -15,7 +14,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -96,10 +94,20 @@ public class EventsController {
         Label details = new Label(formatEventDetails(event));
         details.getStyleClass().add("card-subtext");
 
-        Label coordinator = new Label("Coordinator: Not assigned");
-        coordinator.getStyleClass().add("muted");
+        Label coordinatorLabel = new Label("Coordinator: Not assigned");
+        coordinatorLabel.getStyleClass().add("muted");
 
-        VBox left = new VBox(6, title, details, coordinator);
+        String notesText = (event.getNotes() == null || event.getNotes().isBlank())
+                ? "Note: None"
+                : "Note: " + event.getNotes();
+
+        Label notesLabel = new Label(notesText);
+        notesLabel.getStyleClass().add("muted");
+
+        HBox bottomInfoRow = new HBox(24, coordinatorLabel, notesLabel);
+        bottomInfoRow.setAlignment(Pos.CENTER_LEFT);
+
+        VBox left = new VBox(6, title, details, bottomInfoRow);
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
@@ -110,18 +118,44 @@ public class EventsController {
 
         Button assignBtn = new Button("Assign Coordinator");
         assignBtn.getStyleClass().add("secondary-button");
-        assignBtn.setOnAction(evt -> showInfo("Assign Coordinator", event.getName()));
+        assignBtn.setOnAction(evt -> showInfo("Assign E.Coordinator", event.getName()));
+
+        Button editBtn = new Button("Edit");
+        editBtn.getStyleClass().add("secondary-button");
+        editBtn.setOnAction(evt -> openEditView(event));
 
         Button deleteBtn = new Button("🗑");
         deleteBtn.getStyleClass().addAll("icon-button", "danger-button");
 
-        HBox card = new HBox(12, left, spacer, viewDetailsBtn, assignBtn, deleteBtn);
+        HBox card = new HBox(12, left, spacer, viewDetailsBtn, assignBtn, editBtn, deleteBtn);
         card.setAlignment(Pos.CENTER_LEFT);
         card.getStyleClass().add("card");
 
         deleteBtn.setOnAction(evt -> deleteEventFromDatabaseAndUI(event, card, deleteBtn));
 
         return card;
+    }
+
+    private void openEditView(Event event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/dk/easv/gui/EventsCreator.fxml")
+            );
+
+            Parent creatorView = loader.load();
+
+            EventCreatorController controller = loader.getController();
+            controller.setEvent(event);
+
+            StackPane contentHost = findContentHost(eventsList);
+            if (contentHost != null) {
+                contentHost.getChildren().setAll(creatorView);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Could not open edit view.");
+        }
     }
 
     private void deleteEventFromDatabaseAndUI(Event event, HBox card, Button deleteBtn) {
@@ -178,8 +212,8 @@ public class EventsController {
         return start + " • " + event.getLocation();
     }
 
-    private StackPane findContentHost(Node node) {
-        Node current = node;
+    private StackPane findContentHost(javafx.scene.Node node) {
+        javafx.scene.Node current = node;
         while (current != null) {
             if (current instanceof StackPane stackPane) {
                 if ("contentHost".equals(stackPane.getId()) ||

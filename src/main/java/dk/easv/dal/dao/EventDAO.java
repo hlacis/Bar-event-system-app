@@ -85,4 +85,31 @@ public class EventDAO {
             stmt.executeUpdate();
         }
     }
+    public void updateEvent(Event event) throws Exception {
+        String sql = "UPDATE Event SET Name = ?, Location = ?, StartTime = ?, EndTime = ?, Notes = ? WHERE Id = ?";
+
+        try (Connection conn = cm.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, event.getName());
+            stmt.setString(2, event.getLocation());
+
+            if (event.getStartTime() != null) {
+                stmt.setTimestamp(3, Timestamp.valueOf(event.getStartTime()));
+            } else {
+                stmt.setNull(3, Types.TIMESTAMP);
+            }
+
+            if (event.getEndTime() != null) {
+                stmt.setTimestamp(4, Timestamp.valueOf(event.getEndTime()));
+            } else {
+                stmt.setNull(4, Types.TIMESTAMP);
+            }
+
+            stmt.setString(5, event.getNotes());
+            stmt.setInt(6, event.getId());
+
+            stmt.executeUpdate();
+        }
+    }
 }
