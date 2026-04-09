@@ -127,13 +127,44 @@ public class EventsController {
         Button deleteBtn = new Button("🗑");
         deleteBtn.getStyleClass().addAll("icon-button", "danger-button");
 
+        // mb use
+        viewDetailsBtn.setOnMouseClicked(e -> e.consume());
+        assignBtn.setOnMouseClicked(e -> e.consume());
+        editBtn.setOnMouseClicked(e -> e.consume());
+        deleteBtn.setOnMouseClicked(e -> e.consume());
+
         HBox card = new HBox(12, left, spacer, viewDetailsBtn, assignBtn, editBtn, deleteBtn);
         card.setAlignment(Pos.CENTER_LEFT);
         card.getStyleClass().add("card");
 
+        card.setOnMouseClicked(e -> openDetailsView(event));
+        card.setStyle("-fx-cursor: hand;");
+
         deleteBtn.setOnAction(evt -> deleteEventFromDatabaseAndUI(event, card, deleteBtn));
 
         return card;
+    }
+
+    private void openDetailsView(Event event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/dk/easv/gui/EventDetailsView.fxml")
+            );
+
+            Parent view = loader.load();
+
+            EventDetailsController controller = loader.getController();
+            controller.setEvent(event);
+
+            StackPane contentHost = findContentHost(eventsList);
+            if (contentHost != null) {
+                contentHost.getChildren().setAll(view);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Could not open event details.");
+        }
     }
 
     private void openEditView(Event event) {
