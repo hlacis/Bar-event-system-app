@@ -1,5 +1,4 @@
 package dk.easv.gui;
-
 import dk.easv.be.Event;
 import dk.easv.bll.EventManager;
 import javafx.fxml.FXML;
@@ -12,7 +11,6 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
