@@ -499,3 +499,7 @@
     -fx-background-color: #FDECEE;
     -fx-border-color: #F5B8BF;
 }
+.selected-event-card {
+    -fx-border-color: #FF7A18;
+    -fx-border-width: 2;
+}
