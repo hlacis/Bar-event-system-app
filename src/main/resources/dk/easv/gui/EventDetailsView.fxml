@@ -1,22 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
 
 <VBox xmlns="http://javafx.com/javafx/25"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="dk.easv.gui.EventDetailsController"
-      spacing="10"
-      style="-fx-padding: 20;">
+      spacing="20"
+      style="-fx-padding: 30;">
 
-    <Label fx:id="nameLabel" text="Event Name"/>
-    <Label fx:id="locationLabel" text="Location"/>
-    <Label fx:id="timeLabel" text="Time"/>
-    <Label fx:id="notesLabel" text="Notes"/>
+    <!-- Back button -->
+    <Button text="Back"
+            onAction="#handleBack"
+            styleClass="secondary-button"/>
 
-    <Button text="Edit"/>
-    <Button text="Delete"/>
-    <Button text="Back"/>
+    <!-- Header with title and actions -->
+    <HBox alignment="CENTER_LEFT" spacing="10">
+
+        <!-- Event title -->
+        <Label fx:id="nameLabel" styleClass="page-title"/>
+
+        <!-- Spacer to push buttons right -->
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <!-- Print tickets button -->
+        <Button text="Print Tickets"
+                styleClass="secondary-button"
+                prefWidth="130"
+                minWidth="130"
+                maxWidth="130"
+                prefHeight="38"
+                onAction="#handlePrint"/>
+
+        <!-- Edit button -->
+        <Button text="Edit"
+                styleClass="primary-button"
+                prefWidth="130"
+                minWidth="130"
+                maxWidth="130"
+                prefHeight="38"
+                onAction="#handleEdit"/>
+
+    </HBox>
+
+    <!-- Event information card -->
+    <VBox spacing="12" styleClass="card">
+
+        <!-- Time and location -->
+        <Label fx:id="timeLabel" styleClass="muted"/>
+        <Label fx:id="locationLabel" styleClass="muted"/>
+
+        <!-- Information section -->
+        <Label text="Information" styleClass="section-title"/>
+
+        <!-- Description / notes -->
+        <Label fx:id="notesLabel"
+               wrapText="true"
+               styleClass="card-subtext"/>
+
+    </VBox>
 
 </VBox>
