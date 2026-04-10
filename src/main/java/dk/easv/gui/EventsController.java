@@ -146,14 +146,9 @@ public class EventsController {
 
         Button deleteBtn = new Button("🗑");
         deleteBtn.getStyleClass().addAll("icon-button", "danger-button");
-
-        // mb use
-        viewDetailsBtn.setOnMouseClicked(e -> e.consume());
-        assignBtn.setOnMouseClicked(e -> e.consume());
-        editBtn.setOnMouseClicked(e -> e.consume());
         deleteBtn.setOnMouseClicked(e -> e.consume());
 
-        HBox card = new HBox(12, left, spacer, viewDetailsBtn, assignBtn, editBtn, deleteBtn);
+        HBox card = new HBox(12, left, spacer, deleteBtn);
         card.setAlignment(Pos.CENTER_LEFT);
         card.getStyleClass().add("card");
 
