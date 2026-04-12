@@ -132,4 +132,46 @@ public class EventCoordinatorDAO {
             throw e;
         }
     }
+    public int getEventCountForCoordinator(int coordinatorId) throws Exception {
+        String sql = "SELECT COUNT(*) AS EventCount FROM Event_EventCoordinator WHERE CoordinatorId = ?";
+
+        try (Connection conn = connectionManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, coordinatorId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("EventCount");
+                }
+            }
+        }
+
+        return 0;
+    }
+
+    public void deleteCoordinator(int coordinatorId) throws Exception {
+        String deleteAssignmentsSql = "DELETE FROM Event_EventCoordinator WHERE CoordinatorId = ?";
+        String deleteCoordinatorSql = "DELETE FROM EventCoordinator WHERE Id = ?";
+
+        try (Connection conn = connectionManager.getConnection()) {
+            conn.setAutoCommit(false);
+
+            try (PreparedStatement deleteAssignmentsStmt = conn.prepareStatement(deleteAssignmentsSql);
+                 PreparedStatement deleteCoordinatorStmt = conn.prepareStatement(deleteCoordinatorSql)) {
+
+                deleteAssignmentsStmt.setInt(1, coordinatorId);
+                deleteAssignmentsStmt.executeUpdate();
+
+                deleteCoordinatorStmt.setInt(1, coordinatorId);
+                deleteCoordinatorStmt.executeUpdate();
+
+                conn.commit();
+
+            } catch (Exception e) {
+                conn.rollback();
+                throw e;
+            }
+        }
+    }
 }

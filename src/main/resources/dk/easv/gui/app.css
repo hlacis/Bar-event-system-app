@@ -503,3 +503,6 @@
     -fx-border-color: #FF7A18;
     -fx-border-width: 2;
 }
+.user-two-column-left {
+    -fx-max-width: Infinity;
+}

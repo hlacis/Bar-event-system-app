@@ -56,5 +56,43 @@ public class EventManager {
     public void replaceCoordinatorsForEvent(int eventId, List<Integer> coordinatorIds) throws Exception {
         eventCoordinatorDAO.replaceCoordinatorsForEvent(eventId, coordinatorIds);
     }
+    public int getEventCountForCoordinator(int coordinatorId) throws Exception {
+        return eventCoordinatorDAO.getEventCountForCoordinator(coordinatorId);
+    }
+
+    public void deleteCoordinator(EventCoordinator coordinator) throws Exception {
+        if (coordinator == null) {
+            throw new Exception("Coordinator is missing.");
+        }
+
+        if (coordinator.getId() <= 0) {
+            throw new Exception("Invalid coordinator id.");
+        }
+
+        eventCoordinatorDAO.deleteCoordinator(coordinator.getId());
+    }
+    public EventCoordinator createCoordinator(EventCoordinator coordinator) throws Exception {
+        if (coordinator == null) {
+            throw new Exception("Coordinator is missing.");
+        }
+
+        if (coordinator.getName() == null || coordinator.getName().isBlank()) {
+            throw new Exception("Coordinator name is required.");
+        }
+
+        if (coordinator.getEmail() == null || coordinator.getEmail().isBlank()) {
+            throw new Exception("Coordinator email is required.");
+        }
+
+        if (coordinator.getUsername() == null || coordinator.getUsername().isBlank()) {
+            throw new Exception("Coordinator username is required.");
+        }
+
+        if (coordinator.getPassword() == null || coordinator.getPassword().isBlank()) {
+            throw new Exception("Coordinator password is required.");
+        }
+
+        return eventCoordinatorDAO.createCoordinator(coordinator);
+    }
 
 }
