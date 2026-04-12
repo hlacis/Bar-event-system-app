@@ -1,20 +1,20 @@
 package dk.easv.gui;
 
 import dk.easv.be.Event;
+import dk.easv.be.TicketType;
+import dk.easv.bll.TicketTypeManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
-import dk.easv.be.TicketType;
-import dk.easv.bll.TicketTypeManager;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.StackPane;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
  * Controller for the Event Details view.
@@ -31,6 +31,7 @@ public class EventDetailsController {
     @FXML private TextField txtTicketName;
     @FXML private TextField txtPrice;
     @FXML private TextField txtQuantity;
+    @FXML private TextField txtNote;
 
     @FXML private TableView<TicketType> ticketTable;
     @FXML private TableColumn<TicketType, String> colName;
@@ -53,6 +54,16 @@ public class EventDetailsController {
         colQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
 
         ticketTable.setItems(ticketList);
+
+
+        ticketTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, selected) -> {
+            if (selected != null) {
+                txtTicketName.setText(selected.getName());
+                txtPrice.setText(String.valueOf(selected.getPrice()));
+                txtQuantity.setText(String.valueOf(selected.getQuantity()));
+                txtNote.setText(selected.getNote());
+            }
+        });
     }
 
     @FXML
@@ -97,28 +108,72 @@ public class EventDetailsController {
             String name = txtTicketName.getText();
             double price = Double.parseDouble(txtPrice.getText());
             int quantity = Integer.parseInt(txtQuantity.getText());
+            String note = txtNote.getText();
 
             TicketType tt = new TicketType(
                     event.getId(),
                     name,
                     price,
-                    quantity
+                    quantity,
+                    note
             );
 
             ticketTypeManager.createTicketType(tt);
-
-            // 🔄 Refresh table
             loadTicketTypes();
 
-            // 🧹 Clear input fields
             txtTicketName.clear();
             txtPrice.clear();
             txtQuantity.clear();
+            txtNote.clear();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    private void handleEditTicketType() {
+        try {
+            TicketType selected = ticketTable.getSelectionModel().getSelectedItem();
+
+            if (selected == null) {
+                System.out.println("No ticket selected");
+                return;
+            }
+
+            selected.setName(txtTicketName.getText());
+            selected.setPrice(Double.parseDouble(txtPrice.getText()));
+            selected.setQuantity(Integer.parseInt(txtQuantity.getText()));
+            selected.setNote(txtNote.getText());
+
+            ticketTypeManager.updateTicketType(selected);
+            loadTicketTypes();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleDeleteTicketType() {
+        try {
+            TicketType selected = ticketTable.getSelectionModel().getSelectedItem();
+
+            if (selected == null) {
+                System.out.println("No ticket selected");
+                return;
+            }
+
+            ticketTypeManager.deleteTicketType(selected.getId());
+            loadTicketTypes();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
     @FXML
     private void handleEdit() {
         try {
@@ -128,11 +183,11 @@ public class EventDetailsController {
 
             Parent view = loader.load();
 
-            // Get controller and pass the selected event
+
             EventCreatorController controller = loader.getController();
             controller.setEvent(event);
 
-            // Replace current view inside the same content area
+
             StackPane contentHost = findContentHost(nameLabel);
             if (contentHost != null) {
                 contentHost.getChildren().setAll(view);

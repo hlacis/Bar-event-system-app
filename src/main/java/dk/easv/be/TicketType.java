@@ -1,24 +1,33 @@
 package dk.easv.be;
 
 public class TicketType {
+    //Constructors 1
 
     private int id;
     private int eventId;
     private String name;
     private double price;
     private int quantity;
+    private String note;
 
-    public TicketType(int id, int eventId, String name, double price, int quantity) {
+    //Constructors 2
+
+    public TicketType(int id, int eventId, String name, double price, int quantity, String note) {
         this.id = id;
         this.eventId = eventId;
         this.name = name;
         this.price = price;
         this.quantity = quantity;
+        this.note = note;
     }
 
-    public TicketType(int eventId, String name, double price, int quantity) {
-        this(0, eventId, name, price, quantity);
+
+
+    public TicketType(int eventId, String name, double price, int quantity, String note) {
+        this(0, eventId, name, price, quantity, note);
     }
+
+    // Getters & setters
 
     public int getQuantity() {
         return quantity;
@@ -60,6 +69,12 @@ public class TicketType {
         this.id = id;
     }
 
-    // Getters & setters
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
 }
 

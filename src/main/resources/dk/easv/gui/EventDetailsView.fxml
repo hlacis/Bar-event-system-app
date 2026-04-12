@@ -76,10 +76,19 @@
             <TextField fx:id="txtTicketName" promptText="Name"/>
             <TextField fx:id="txtPrice" promptText="Price"/>
             <TextField fx:id="txtQuantity" promptText="Quantity"/>
+            <TextField fx:id="txtNote" promptText="Note (e.g. Free drink)"/>
 
             <Button text="Add"
                     styleClass="primary-button"
                     onAction="#handleAddTicketType"/>
+
+            <Button text="Edit"
+                    styleClass="secondary-button"
+                    onAction="#handleEditTicketType"/>
+
+            <Button text="Delete"
+                    styleClass="secondary-button"
+                    onAction="#handleDeleteTicketType"/>
         </HBox>
 
         <!-- Table -->

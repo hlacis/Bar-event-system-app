@@ -15,7 +15,7 @@ public class TicketTypeDAO {
     private final ConnectionManager connectionManager = new ConnectionManager();
 
     public TicketType createTicketType(TicketType ticketType) throws Exception {
-        String sql = "INSERT INTO TicketType (EventId, Name, Price, Quantity) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO TicketType (EventId, Name, Price, Quantity, Note) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = connectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -24,6 +24,7 @@ public class TicketTypeDAO {
             stmt.setString(2, ticketType.getName());
             stmt.setDouble(3, ticketType.getPrice());
             stmt.setInt(4, ticketType.getQuantity());
+            stmt.setString(5, ticketType.getNote());
 
             stmt.executeUpdate();
 
@@ -33,6 +34,33 @@ public class TicketTypeDAO {
             }
 
             return ticketType;
+        }
+    }
+
+    public void updateTicketType(TicketType tt) throws Exception {
+        String sql = "UPDATE TicketType SET Name=?, Price=?, Quantity=?, Note=? WHERE Id=?";
+
+        try (Connection conn = connectionManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, tt.getName());
+            stmt.setDouble(2, tt.getPrice());
+            stmt.setInt(3, tt.getQuantity());
+            stmt.setString(4, tt.getNote());
+            stmt.setInt(5, tt.getId());
+
+            stmt.executeUpdate();
+        }
+    }
+
+    public void deleteTicketType(int id) throws Exception {
+        String sql = "DELETE FROM TicketType WHERE Id=?";
+
+        try (Connection conn = connectionManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
         }
     }
 
@@ -53,7 +81,8 @@ public class TicketTypeDAO {
                         rs.getInt("EventId"),
                         rs.getString("Name"),
                         rs.getDouble("Price"),
-                        rs.getInt("Quantity")
+                        rs.getInt("Quantity"),
+                        rs.getString("Note")
                 ));
             }
         }

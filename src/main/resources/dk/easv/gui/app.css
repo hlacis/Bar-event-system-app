@@ -491,14 +491,28 @@
     -fx-background-color: #E6EDF8;
 }
 
-.danger-button {
+.icon-button.danger-button {
+    -fx-background-color: transparent;
+    -fx-border-color: #D11A2A;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+
     -fx-text-fill: #D11A2A;
+    -fx-font-size: 16px;
 }
 
-.danger-button:hover {
+.icon-button.danger-button:hover {
     -fx-background-color: #FDECEE;
-    -fx-border-color: #F5B8BF;
 }
+
+.button.danger-button:hover {
+    -fx-background-color: #B31322;
+}
+
+.button.danger-button:pressed {
+    -fx-background-color: #8E0F1A;
+}
+
 .selected-event-card {
     -fx-border-color: #FF7A18;
     -fx-border-width: 2;

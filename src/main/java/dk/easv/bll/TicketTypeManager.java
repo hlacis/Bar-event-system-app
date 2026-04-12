@@ -16,4 +16,12 @@ public class TicketTypeManager {
     public List<TicketType> getTicketTypesByEvent(int eventId) throws Exception {
         return dao.getTicketTypesByEvent(eventId);
     }
+
+    public void updateTicketType(TicketType tt) throws Exception {
+        dao.updateTicketType(tt);
+    }
+
+    public void deleteTicketType(int id) throws Exception {
+        dao.deleteTicketType(id);
+    }
 }
