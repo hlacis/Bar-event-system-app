@@ -7,6 +7,14 @@ import javafx.scene.Parent;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
+import dk.easv.be.TicketType;
+import dk.easv.bll.TicketTypeManager;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 /**
  * Controller for the Event Details view.
@@ -20,14 +28,34 @@ public class EventDetailsController {
     @FXML private Label locationLabel;
     @FXML private Label timeLabel;
     @FXML private Label notesLabel;
+    @FXML private TextField txtTicketName;
+    @FXML private TextField txtPrice;
+    @FXML private TextField txtQuantity;
+
+    @FXML private TableView<TicketType> ticketTable;
+    @FXML private TableColumn<TicketType, String> colName;
+    @FXML private TableColumn<TicketType, Double> colPrice;
+    @FXML private TableColumn<TicketType, Integer> colQuantity;
 
     // Holds the selected event
     private Event event;
+    private TicketTypeManager ticketTypeManager = new TicketTypeManager();
+    private ObservableList<TicketType> ticketList = FXCollections.observableArrayList();
 
     /**
      * Called from EventsController when a user clicks an event.
      * This method sets the data in the UI.
      */
+    @FXML
+    public void initialize() {
+        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+        colQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+
+        ticketTable.setItems(ticketList);
+    }
+
+    @FXML
     public void setEvent(Event event) {
         this.event = event;
 
@@ -46,12 +74,51 @@ public class EventDetailsController {
         } else {
             notesLabel.setText(event.getNotes());
         }
+        loadTicketTypes();
     }
 
     /**
      * Opens the Event Creator view in EDIT mode.
      * Reuses the existing EventCreatorController.
      */
+
+    private void loadTicketTypes() {
+        try {
+            ticketList.clear();
+            ticketList.addAll(ticketTypeManager.getTicketTypesByEvent(event.getId()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleAddTicketType() {
+        try {
+            String name = txtTicketName.getText();
+            double price = Double.parseDouble(txtPrice.getText());
+            int quantity = Integer.parseInt(txtQuantity.getText());
+
+            TicketType tt = new TicketType(
+                    event.getId(),
+                    name,
+                    price,
+                    quantity
+            );
+
+            ticketTypeManager.createTicketType(tt);
+
+            // 🔄 Refresh table
+            loadTicketTypes();
+
+            // 🧹 Clear input fields
+            txtTicketName.clear();
+            txtPrice.clear();
+            txtQuantity.clear();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     @FXML
     private void handleEdit() {
         try {

@@ -6,6 +6,9 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
 
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <VBox xmlns="http://javafx.com/javafx/25"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="dk.easv.gui.EventDetailsController"
@@ -60,6 +63,33 @@
         <Label fx:id="notesLabel"
                wrapText="true"
                styleClass="card-subtext"/>
+
+    </VBox>
+
+    <!-- Ticket Types Section -->
+    <VBox spacing="10" styleClass="card">
+
+        <Label text="Ticket Types" styleClass="section-title"/>
+
+        <!-- Input fields -->
+        <HBox spacing="10">
+            <TextField fx:id="txtTicketName" promptText="Name"/>
+            <TextField fx:id="txtPrice" promptText="Price"/>
+            <TextField fx:id="txtQuantity" promptText="Quantity"/>
+
+            <Button text="Add"
+                    styleClass="primary-button"
+                    onAction="#handleAddTicketType"/>
+        </HBox>
+
+        <!-- Table -->
+        <TableView fx:id="ticketTable">
+            <columns>
+                <TableColumn fx:id="colName" text="Name"/>
+                <TableColumn fx:id="colPrice" text="Price"/>
+                <TableColumn fx:id="colQuantity" text="Quantity"/>
+            </columns>
+        </TableView>
 
     </VBox>
 
