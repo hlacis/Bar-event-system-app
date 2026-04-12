@@ -33,7 +33,7 @@
                 <ToggleButton fx:id="usersBtn" text="E.C. Management" toggleGroup="$navGroup"
                               onAction="#showUsers" styleClass="nav-button"/>
 
-                <ToggleButton fx:id="assignBtn" text="Assigning" toggleGroup="$navGroup"
+                <ToggleButton fx:id="assignBtn" text="E.C. Assigning" toggleGroup="$navGroup"
                               onAction="#showAssign" styleClass="nav-button"/>
 
                 <ToggleButton fx:id="eventsBtn" text="Events" toggleGroup="$navGroup"
