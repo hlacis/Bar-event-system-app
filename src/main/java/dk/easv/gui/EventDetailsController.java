@@ -16,6 +16,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.time.format.DateTimeFormatter;
+
 /**
  * Controller for the Event Details view.
  * Responsible for displaying event information
@@ -64,8 +66,13 @@ public class EventDetailsController {
         locationLabel.setText("Location: " + event.getLocation());
 
         // Handle time safely (avoid null)
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
         if (event.getStartTime() != null) {
-            timeLabel.setText("Time: " + event.getStartTime().toString());
+            String start = event.getStartTime().format(formatter);
+            String end = event.getEndTime() != null ? event.getEndTime().format(formatter) : "";
+
+            timeLabel.setText(start + " - " + end);
         }
 
         // Handle notes (empty vs filled)
@@ -107,10 +114,10 @@ public class EventDetailsController {
 
             ticketTypeManager.createTicketType(tt);
 
-            // 🔄 Refresh table
+            // Refresh table
             loadTicketTypes();
 
-            // 🧹 Clear input fields
+            // Clear input fields
             txtTicketName.clear();
             txtPrice.clear();
             txtQuantity.clear();

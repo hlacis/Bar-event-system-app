@@ -13,6 +13,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import javafx.scene.control.ComboBox;
 
 public class EventCreatorController {
 
@@ -39,6 +41,18 @@ public class EventCreatorController {
     @FXML
     private TextField notesField;
 
+    // Time selectors for start
+    @FXML
+    private ComboBox<Integer> startHourBox;
+    @FXML
+    private ComboBox<Integer> startMinuteBox;
+
+    // Time selectors for end
+    @FXML
+    private ComboBox<Integer> endHourBox;
+    @FXML
+    private ComboBox<Integer> endMinuteBox;
+
     private final EventManager eventManager = new EventManager();
 
     @FXML
@@ -51,8 +65,39 @@ public class EventCreatorController {
             LocalDate startDate = startDatePicker.getValue();
             LocalDate endDate = endDatePicker.getValue();
 
-            LocalDateTime startTime = startDate != null ? startDate.atStartOfDay() : null;
-            LocalDateTime endTime = endDate != null ? endDate.atTime(23, 59) : null;
+            Integer startHour = startHourBox.getValue();
+            Integer startMinute = startMinuteBox.getValue();
+
+            Integer endHour = endHourBox.getValue();
+            Integer endMinute = endMinuteBox.getValue();
+
+            // Validation
+            if (startDate == null || startHour == null || startMinute == null) {
+                showError("Please select start date and time");
+                return;
+            }
+
+            if (endDate == null || endHour == null || endMinute == null) {
+                showError("Please select end date and time");
+                return;
+            }
+
+            // Combine date + time
+            LocalDateTime startTime = LocalDateTime.of(
+                    startDate,
+                    LocalTime.of(startHour, startMinute)
+            );
+
+            LocalDateTime endTime = LocalDateTime.of(
+                    endDate,
+                    LocalTime.of(endHour, endMinute)
+            );
+
+            // Make sure end time is after start time
+            if (endTime.isBefore(startTime)) {
+                showError("End time cannot be before start time");
+                return;
+            }
 
             if (eventToEdit == null) {
                 Event event = new Event(0, name, location, startTime, endTime, notes);
@@ -72,9 +117,52 @@ public class EventCreatorController {
             loadEventsView();
 
         } catch (Exception e) {
-            e.printStackTrace();
-            showError(e.getMessage());
+            showError("Something went wrong: " + e.getMessage());
         }
+    }
+
+    @FXML
+    public void initialize() {
+
+        // Populate time selection dropdowns for event creation/editing
+
+        // Add hours (0–23)
+        for (int i = 0; i < 24; i++) {
+            startHourBox.getItems().add(i);
+            endHourBox.getItems().add(i);
+        }
+        // Format hours to 2 digits
+        startHourBox.setCellFactory(_ -> new javafx.scene.control.ListCell<>() {
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : String.format("%02d", item));
+            }
+        });
+
+        startHourBox.setButtonCell(startHourBox.getCellFactory().call(null));
+
+        endHourBox.setCellFactory(startHourBox.getCellFactory());
+        endHourBox.setButtonCell(endHourBox.getCellFactory().call(null));
+
+        // Add minutes
+        for (int i = 0; i < 60; i += 15) {
+            startMinuteBox.getItems().add(i);
+            endMinuteBox.getItems().add(i);
+        }
+        // Format numbers to always show 2 digits
+        startMinuteBox.setCellFactory(_ -> new javafx.scene.control.ListCell<>() {
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : String.format("%02d", item));
+            }
+        });
+
+        startMinuteBox.setButtonCell(startMinuteBox.getCellFactory().call(null));
+
+        endMinuteBox.setCellFactory(startMinuteBox.getCellFactory());
+        endMinuteBox.setButtonCell(endMinuteBox.getCellFactory().call(null));
     }
 
     @FXML
@@ -141,10 +229,22 @@ public class EventCreatorController {
 
         if (event.getStartTime() != null) {
             startDatePicker.setValue(event.getStartTime().toLocalDate());
+            startHourBox.setValue(event.getStartTime().getHour());
+
+            int minute = event.getStartTime().getMinute();
+            minute = (minute / 15) * 15;
+
+            startMinuteBox.setValue(minute);
         }
 
         if (event.getEndTime() != null) {
             endDatePicker.setValue(event.getEndTime().toLocalDate());
+            endHourBox.setValue(event.getEndTime().getHour());
+
+            int minute = event.getEndTime().getMinute();
+            minute = (minute / 15) * 15;
+
+            endMinuteBox.setValue(minute);
         }
     }
 }
