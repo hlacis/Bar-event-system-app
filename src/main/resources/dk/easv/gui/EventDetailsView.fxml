@@ -108,6 +108,7 @@
                 <TableColumn fx:id="colName" text="Name" prefWidth="140"/>
                 <TableColumn fx:id="colPrice" text="Price" prefWidth="110"/>
                 <TableColumn fx:id="colQuantity" text="Quantity" prefWidth="120"/>
+                <TableColumn fx:id="colNote" text="Note"/>
             </columns>
         </TableView>
 

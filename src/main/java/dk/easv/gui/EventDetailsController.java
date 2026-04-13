@@ -15,8 +15,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
+import javafx.scene.control.Alert;
 import java.time.format.DateTimeFormatter;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import java.util.Optional;
 
 /**
  * Controller for the Event Details view.
@@ -39,6 +42,7 @@ public class EventDetailsController {
     @FXML private TableColumn<TicketType, String> colName;
     @FXML private TableColumn<TicketType, Double> colPrice;
     @FXML private TableColumn<TicketType, Integer> colQuantity;
+    @FXML private TableColumn<TicketType, String> colNote;
 
     // Holds the selected event
     private Event event;
@@ -54,8 +58,11 @@ public class EventDetailsController {
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
         colQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        colNote.setCellValueFactory(new PropertyValueFactory<>("note"));
 
         ticketTable.setItems(ticketList);
+
+        ticketTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
 
         ticketTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, selected) -> {
@@ -143,6 +150,9 @@ public class EventDetailsController {
 
     @FXML
     private void handleEditTicketType() {
+        System.out.println("EDIT CLICKED");
+
+
         try {
             TicketType selected = ticketTable.getSelectionModel().getSelectedItem();
 
@@ -151,13 +161,37 @@ public class EventDetailsController {
                 return;
             }
 
-            selected.setName(txtTicketName.getText());
-            selected.setPrice(Double.parseDouble(txtPrice.getText()));
-            selected.setQuantity(Integer.parseInt(txtQuantity.getText()));
-            selected.setNote(txtNote.getText());
+            // Get updated values from text fields
+            String name = txtTicketName.getText();
+            double price = Double.parseDouble(txtPrice.getText());
+            int quantity = Integer.parseInt(txtQuantity.getText());
+            String note = txtNote.getText();
 
+            // Update the selected object
+            selected.setName(name);
+            selected.setPrice(price);
+            selected.setQuantity(quantity);
+            selected.setNote(note);
+
+            // Send update to database
             ticketTypeManager.updateTicketType(selected);
+
+            // Refresh table
             loadTicketTypes();
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText(null);
+            alert.setContentText("Ticket updated successfully!");
+            alert.showAndWait();
+
+            // Clear input fields
+            txtTicketName.clear();
+            txtPrice.clear();
+            txtQuantity.clear();
+            txtNote.clear();
+
+            System.out.println("Ticket updated!");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -174,14 +208,29 @@ public class EventDetailsController {
                 return;
             }
 
-            ticketTypeManager.deleteTicketType(selected.getId());
-            loadTicketTypes();
+            // ✅ Confirmation popup
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirm Delete");
+            alert.setHeaderText(null);
+            alert.setContentText("Are you sure you want to delete this ticket?");
+
+            Optional<ButtonType> result = alert.showAndWait();
+
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                // ✅ User clicked OK → delete
+                ticketTypeManager.deleteTicketType(selected.getId());
+                loadTicketTypes();
+
+                System.out.println("Ticket deleted");
+            } else {
+                // ❌ User cancelled
+                System.out.println("Delete cancelled");
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
 
     @FXML
