@@ -14,6 +14,8 @@
       fx:controller="dk.easv.gui.EventDetailsController"
       spacing="20"
       styleClass="page">
+      fillWidth="true"
+      styleClass="page">
 
     <!-- Back button -->
     <Button text="Back"
@@ -40,6 +42,11 @@
                 maxWidth="145"
                 prefHeight="46"
                 onAction="#handlePrintTickets"/>
+                prefWidth="145"
+                minWidth="145"
+                maxWidth="145"
+                prefHeight="46"
+                onAction="#handlePrint"/>
 
         <!-- Edit button -->
         <Button text="Edit"
