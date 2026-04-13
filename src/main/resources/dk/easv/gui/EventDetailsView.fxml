@@ -5,46 +5,50 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
-
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+
 <VBox xmlns="http://javafx.com/javafx/25"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="dk.easv.gui.EventDetailsController"
       spacing="20"
-      style="-fx-padding: 30;">
+      fillWidth="true"
+      styleClass="page">
 
     <!-- Back button -->
     <Button text="Back"
             onAction="#handleBack"
-            styleClass="secondary-button"/>
+            styleClass="secondary-button"
+            prefWidth="72"
+            minWidth="72"
+            maxWidth="72"/>
 
     <!-- Header with title and actions -->
-    <HBox alignment="CENTER_LEFT" spacing="10">
+    <HBox alignment="CENTER_LEFT" spacing="16">
 
         <!-- Event title -->
-        <Label fx:id="nameLabel" styleClass="page-title"/>
-
-        <!-- Spacer to push buttons right -->
-        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="nameLabel"
+               styleClass="event-details-title"
+               maxWidth="1.7976931348623157E308"
+               HBox.hgrow="ALWAYS"/>
 
         <!-- Print tickets button -->
         <Button text="Print Tickets"
                 styleClass="secondary-button"
-                prefWidth="130"
-                minWidth="130"
-                maxWidth="130"
-                prefHeight="38"
+                prefWidth="145"
+                minWidth="145"
+                maxWidth="145"
+                prefHeight="46"
                 onAction="#handlePrint"/>
 
         <!-- Edit button -->
         <Button text="Edit"
                 styleClass="primary-button"
-                prefWidth="130"
-                minWidth="130"
-                maxWidth="130"
-                prefHeight="38"
+                prefWidth="145"
+                minWidth="145"
+                maxWidth="145"
+                prefHeight="46"
                 onAction="#handleEdit"/>
 
     </HBox>
@@ -52,14 +56,11 @@
     <!-- Event information card -->
     <VBox spacing="12" styleClass="card">
 
-        <!-- Time and location -->
         <Label fx:id="timeLabel" styleClass="muted"/>
         <Label fx:id="locationLabel" styleClass="muted"/>
 
-        <!-- Information section -->
         <Label text="Information" styleClass="section-title"/>
 
-        <!-- Description / notes -->
         <Label fx:id="notesLabel"
                wrapText="true"
                styleClass="card-subtext"/>
@@ -67,36 +68,46 @@
     </VBox>
 
     <!-- Ticket Types Section -->
-    <VBox spacing="10" styleClass="card">
+    <VBox spacing="12" styleClass="card">
 
         <Label text="Ticket Types" styleClass="section-title"/>
 
         <!-- Input fields -->
-        <HBox spacing="10">
-            <TextField fx:id="txtTicketName" promptText="Name"/>
-            <TextField fx:id="txtPrice" promptText="Price"/>
-            <TextField fx:id="txtQuantity" promptText="Quantity"/>
-            <TextField fx:id="txtNote" promptText="Note (e.g. Free drink)"/>
+        <HBox spacing="12" alignment="CENTER_LEFT">
+            <TextField fx:id="txtTicketName" promptText="Name"
+                       prefWidth="170" minWidth="170" maxWidth="170"/>
+
+            <TextField fx:id="txtPrice" promptText="Price"
+                       prefWidth="120" minWidth="120" maxWidth="120"/>
+
+            <TextField fx:id="txtQuantity" promptText="Quantity"
+                       prefWidth="120" minWidth="120" maxWidth="120"/>
+
+            <TextField fx:id="txtNote" promptText="Note (e.g. Free drink)"
+                       prefWidth="190" minWidth="190" maxWidth="190"/>
 
             <Button text="Add"
                     styleClass="primary-button"
+                    prefWidth="82" minWidth="82" maxWidth="82"
                     onAction="#handleAddTicketType"/>
 
             <Button text="Edit"
                     styleClass="secondary-button"
+                    prefWidth="82" minWidth="82" maxWidth="82"
                     onAction="#handleEditTicketType"/>
 
             <Button text="Delete"
                     styleClass="secondary-button"
+                    prefWidth="90" minWidth="90" maxWidth="90"
                     onAction="#handleDeleteTicketType"/>
         </HBox>
 
         <!-- Table -->
-        <TableView fx:id="ticketTable">
+        <TableView fx:id="ticketTable" prefHeight="220">
             <columns>
-                <TableColumn fx:id="colName" text="Name"/>
-                <TableColumn fx:id="colPrice" text="Price"/>
-                <TableColumn fx:id="colQuantity" text="Quantity"/>
+                <TableColumn fx:id="colName" text="Name" prefWidth="140"/>
+                <TableColumn fx:id="colPrice" text="Price" prefWidth="110"/>
+                <TableColumn fx:id="colQuantity" text="Quantity" prefWidth="120"/>
             </columns>
         </TableView>
 

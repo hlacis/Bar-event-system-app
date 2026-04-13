@@ -520,3 +520,8 @@
 .user-two-column-left {
     -fx-max-width: Infinity;
 }
+.event-details-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #1D2433;
+}
