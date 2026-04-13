@@ -51,8 +51,20 @@ public class EventDetailsController {
         colQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         colNote.setCellValueFactory(new PropertyValueFactory<>("note"));
 
-        ticketTable.setItems(ticketList);
+        //Table spacing
+        colName.setPrefWidth(160);
+        colPrice.setPrefWidth(90);
+        colQuantity.setPrefWidth(90);
+        colNote.setPrefWidth(300);
 
+        // Optional size caps
+        colName.setMaxWidth(180);
+        colPrice.setMaxWidth(150);
+        colQuantity.setMaxWidth(120);
+        colNote.setMaxWidth(350);
+
+        //Table setup
+        ticketTable.setItems(ticketList);
         ticketTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
 
