@@ -61,9 +61,9 @@
                     <Label text="EASV Tickets — Admin Panel" styleClass="topbar-title"/>
 
                     <Region HBox.hgrow="ALWAYS"
-                            prefWidth="565"
-                            minWidth="565"
-                            maxWidth="565"/>
+                            prefWidth="545"
+                            minWidth="545"
+                            maxWidth="545"/>
 
                     <Label text="Admin: Jakub H." styleClass="pill"/>
                     <Button text="Log Out"
