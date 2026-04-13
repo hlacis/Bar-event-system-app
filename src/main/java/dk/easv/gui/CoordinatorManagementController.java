@@ -18,7 +18,7 @@ import javafx.scene.layout.VBox;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsersController {
+public class CoordinatorManagementController {
 
     @FXML
     private VBox userCardContainer;
