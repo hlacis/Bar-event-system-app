@@ -10,7 +10,9 @@ import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -24,15 +26,56 @@ public class EventsController {
     @FXML
     private VBox eventsList;
 
+    @FXML
+    private TextField searchField;
+
     private final EventManager eventManager = new EventManager();
+
+    private final List<EventCardViewData> allEvents = new ArrayList<>();
 
     @FXML
     public void initialize() {
         loadEventsFromDatabaseAsync();
+
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
+            filterEvents(newVal);
+        });
+    }
+
+    private void filterEvents(String query) {
+        if (query == null || query.isBlank()) {
+            renderEvents(allEvents);
+            return;
+        }
+
+        String lowerQuery = query.toLowerCase().trim();
+        List<EventCardViewData> filteredEvents = new ArrayList<>();
+
+        for (EventCardViewData data : allEvents) {
+            Event event = data.event();
+
+            boolean matchesName = event.getName() != null
+                    && event.getName().toLowerCase().contains(lowerQuery);
+
+            boolean matchesLocation = event.getLocation() != null
+                    && event.getLocation().toLowerCase().contains(lowerQuery);
+
+            boolean matchesCoordinator = data.coordinatorText() != null
+                    && data.coordinatorText().toLowerCase().contains(lowerQuery);
+
+            boolean matchesNotes = data.notesText() != null
+                    && data.notesText().toLowerCase().contains(lowerQuery);
+
+            if (matchesName || matchesLocation || matchesCoordinator || matchesNotes) {
+                filteredEvents.add(data);
+            }
+        }
+
+        renderEvents(filteredEvents);
     }
 
     @FXML
-    private void generateEvent() {
+    private void createEvent() {
         try {
             Parent creatorView = FXMLLoader.load(
                     getClass().getResource("/dk/easv/gui/EventsCreator.fxml")
@@ -84,18 +127,9 @@ public class EventsController {
         };
 
         loadTask.setOnSucceeded(workerStateEvent -> {
-            List<EventCardViewData> cardDataList = loadTask.getValue();
-            eventsList.getChildren().clear();
-
-            for (EventCardViewData data : cardDataList) {
-                eventsList.getChildren().add(createEventCard(data));
-            }
-
-            if (cardDataList.isEmpty()) {
-                Label emptyLabel = new Label("No events found.");
-                emptyLabel.getStyleClass().add("muted");
-                eventsList.getChildren().add(emptyLabel);
-            }
+            allEvents.clear();
+            allEvents.addAll(loadTask.getValue());
+            renderEvents(allEvents);
         });
 
         loadTask.setOnFailed(workerStateEvent -> {
@@ -107,6 +141,21 @@ public class EventsController {
         Thread thread = new Thread(loadTask);
         thread.setDaemon(true);
         thread.start();
+    }
+
+    private void renderEvents(List<EventCardViewData> eventDataToRender) {
+        eventsList.getChildren().clear();
+
+        if (eventDataToRender.isEmpty()) {
+            Label emptyLabel = new Label("No events found.");
+            emptyLabel.getStyleClass().add("muted");
+            eventsList.getChildren().add(emptyLabel);
+            return;
+        }
+
+        for (EventCardViewData data : eventDataToRender) {
+            eventsList.getChildren().add(createEventCard(data));
+        }
     }
 
     private HBox createEventCard(EventCardViewData data) {
@@ -130,19 +179,7 @@ public class EventsController {
         VBox left = new VBox(6, title, details, bottomInfoRow);
 
         Region spacer = new Region();
-        HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
-
-        Button viewDetailsBtn = new Button("View Details");
-        viewDetailsBtn.getStyleClass().add("secondary-button");
-        viewDetailsBtn.setOnAction(evt -> showInfo("View Details", event.getName()));
-
-        Button assignBtn = new Button("Assign Coordinator");
-        assignBtn.getStyleClass().add("secondary-button");
-        assignBtn.setOnAction(evt -> openAssignCoordinatorView());
-
-        Button editBtn = new Button("Edit");
-        editBtn.getStyleClass().add("secondary-button");
-        editBtn.setOnAction(evt -> openEditView(event));
+        HBox.setHgrow(spacer, Priority.ALWAYS);
 
         Button deleteBtn = new Button("🗑");
         deleteBtn.getStyleClass().addAll("icon-button", "danger-button");
@@ -242,13 +279,8 @@ public class EventsController {
                 };
 
                 deleteTask.setOnSucceeded(workerStateEvent -> {
-                    eventsList.getChildren().remove(card);
-
-                    if (eventsList.getChildren().isEmpty()) {
-                        Label emptyLabel = new Label("No events found.");
-                        emptyLabel.getStyleClass().add("muted");
-                        eventsList.getChildren().add(emptyLabel);
-                    }
+                    allEvents.removeIf(data -> data.event().getId() == event.getId());
+                    filterEvents(searchField.getText());
                 });
 
                 deleteTask.setOnFailed(workerStateEvent -> {

@@ -23,13 +23,13 @@ public class AdminController {
     @FXML
     public void initialize() {
         usersBtn.setSelected(true);
-        loadIntoContent("/dk/easv/gui/UsersView.fxml");
+        loadIntoContent("/dk/easv/gui/CoordinatorManagement.fxml");
     }
 
 
     public void showUsers() {
         usersBtn.setSelected(true);
-        loadIntoContent("/dk/easv/gui/UsersView.fxml");
+        loadIntoContent("/dk/easv/gui/CoordinatorManagement.fxml");
     }
 
     public void showAssign() {

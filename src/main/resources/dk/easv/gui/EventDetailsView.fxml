@@ -13,8 +13,8 @@
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="dk.easv.gui.EventDetailsController"
       spacing="20"
-      fillWidth="true"
       styleClass="page">
+
 
     <!-- Back button -->
     <Button text="Back"
@@ -40,7 +40,8 @@
                 minWidth="145"
                 maxWidth="145"
                 prefHeight="46"
-                onAction="#handlePrint"/>
+                onAction="#handlePrintTickets"/>
+
 
         <!-- Edit button -->
         <Button text="Edit"

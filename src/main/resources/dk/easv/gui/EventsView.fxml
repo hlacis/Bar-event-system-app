@@ -7,6 +7,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Region?>
 <VBox xmlns="http://javafx.com/javafx/25"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="dk.easv.gui.EventsController"
@@ -14,13 +16,21 @@
       styleClass="page">
 
     <Label text="Events (Read-only)" styleClass="page-title"/>
-    <Label text="Admins manage users and coordinator access. Admins cannot create events."
-           styleClass="page-subtitle"/>
 
-    <HBox>
-        <Button text="Create event" onAction="#generateEvent"
+    <HBox spacing="12" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField"
+                   promptText="Search events..."
+                   styleClass="search-input"
+                   prefWidth="520"/>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Button text="Create new event"
+                onAction="#createEvent"
                 styleClass="primary-button"/>
     </HBox>
+
+
 
     <ScrollPane fitToWidth="true"
                 hbarPolicy="NEVER"

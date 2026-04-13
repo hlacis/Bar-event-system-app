@@ -1,38 +1,34 @@
 package dk.easv.gui;
 
 import dk.easv.be.Event;
+import dk.easv.be.Ticket;
 import dk.easv.be.TicketType;
+import dk.easv.bll.TicketManager;
+import dk.easv.bll.TicketPDFGenerator;
 import dk.easv.bll.TicketTypeManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.cell.PropertyValueFactory;
+
 import javafx.scene.control.Alert;
 import java.time.format.DateTimeFormatter;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import java.util.Optional;
 
-/**
- * Controller for the Event Details view.
- * Responsible for displaying event information
- * and handling navigation (edit + back).
- */
 public class EventDetailsController {
 
-    // UI elements from FXML
     @FXML private Label nameLabel;
     @FXML private Label locationLabel;
     @FXML private Label timeLabel;
     @FXML private Label notesLabel;
+
     @FXML private TextField txtTicketName;
     @FXML private TextField txtPrice;
     @FXML private TextField txtQuantity;
@@ -44,15 +40,10 @@ public class EventDetailsController {
     @FXML private TableColumn<TicketType, Integer> colQuantity;
     @FXML private TableColumn<TicketType, String> colNote;
 
-    // Holds the selected event
     private Event event;
     private TicketTypeManager ticketTypeManager = new TicketTypeManager();
     private ObservableList<TicketType> ticketList = FXCollections.observableArrayList();
 
-    /**
-     * Called from EventsController when a user clicks an event.
-     * This method sets the data in the UI.
-     */
     @FXML
     public void initialize() {
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -79,33 +70,25 @@ public class EventDetailsController {
     public void setEvent(Event event) {
         this.event = event;
 
-        // Display event data in labels
         nameLabel.setText(event.getName());
         locationLabel.setText("Location: " + event.getLocation());
 
-        // Handle time safely (avoid null)
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         if (event.getStartTime() != null) {
             String start = event.getStartTime().format(formatter);
             String end = event.getEndTime() != null ? event.getEndTime().format(formatter) : "";
-
             timeLabel.setText(start + " - " + end);
         }
 
-        // Handle notes (empty vs filled)
         if (event.getNotes() == null || event.getNotes().isBlank()) {
             notesLabel.setText("No notes");
         } else {
             notesLabel.setText(event.getNotes());
         }
+
         loadTicketTypes();
     }
-
-    /**
-     * Opens the Event Creator view in EDIT mode.
-     * Reuses the existing EventCreatorController.
-     */
 
     private void loadTicketTypes() {
         try {
@@ -119,25 +102,17 @@ public class EventDetailsController {
     @FXML
     private void handleAddTicketType() {
         try {
-            String name = txtTicketName.getText();
-            double price = Double.parseDouble(txtPrice.getText());
-            int quantity = Integer.parseInt(txtQuantity.getText());
-            String note = txtNote.getText();
-
             TicketType tt = new TicketType(
                     event.getId(),
-                    name,
-                    price,
-                    quantity,
-                    note
+                    txtTicketName.getText(),
+                    Double.parseDouble(txtPrice.getText()),
+                    Integer.parseInt(txtQuantity.getText()),
+                    txtNote.getText()
             );
 
             ticketTypeManager.createTicketType(tt);
-
-            // Refresh table
             loadTicketTypes();
 
-            // Clear input fields
             txtTicketName.clear();
             txtPrice.clear();
             txtQuantity.clear();
@@ -157,7 +132,7 @@ public class EventDetailsController {
             TicketType selected = ticketTable.getSelectionModel().getSelectedItem();
 
             if (selected == null) {
-                System.out.println("No ticket selected");
+                showError("No ticket selected");
                 return;
             }
 
@@ -204,7 +179,7 @@ public class EventDetailsController {
             TicketType selected = ticketTable.getSelectionModel().getSelectedItem();
 
             if (selected == null) {
-                System.out.println("No ticket selected");
+                showError("No ticket selected");
                 return;
             }
 
@@ -232,6 +207,40 @@ public class EventDetailsController {
         }
     }
 
+    @FXML
+    private void handlePrintTickets() {
+
+        TicketType selected = ticketTable.getSelectionModel().getSelectedItem();
+
+        if (selected == null) {
+            showError("Please select a ticket type");
+            return;
+        }
+
+        try {
+            // Create ticket in database
+            TicketManager manager = new TicketManager();
+
+            Ticket ticket = manager.createTicket(
+                    event.getId(),
+                    selected.getId(),
+                    "Test Name",
+                    "test@mail.com"
+            );
+
+            // Generate PDF with QR code
+            TicketPDFGenerator pdfGen = new TicketPDFGenerator();
+            pdfGen.generatePDF(ticket);
+
+            // Show success message
+            showInfo("Success", "Ticket created and PDF generated");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Could not create ticket");
+        }
+    }
+
 
     @FXML
     private void handleEdit() {
@@ -242,10 +251,8 @@ public class EventDetailsController {
 
             Parent view = loader.load();
 
-
             EventCreatorController controller = loader.getController();
             controller.setEvent(event);
-
 
             StackPane contentHost = findContentHost(nameLabel);
             if (contentHost != null) {
@@ -257,9 +264,6 @@ public class EventDetailsController {
         }
     }
 
-    /**
-     * Navigates back to the Events list view.
-     */
     @FXML
     private void handleBack() {
         try {
@@ -277,15 +281,6 @@ public class EventDetailsController {
         }
     }
 
-    @FXML
-    private void handlePrint() {
-        System.out.println("Print tickets clicked");
-    }
-
-    /**
-     * Finds the main content container (StackPane)
-     * so we can swap views inside the same window.
-     */
     private StackPane findContentHost(Node node) {
         Node current = node;
         while (current != null) {
@@ -298,5 +293,21 @@ public class EventDetailsController {
             current = current.getParent();
         }
         return null;
+    }
+
+    private void showInfo(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
