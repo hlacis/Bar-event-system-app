@@ -30,10 +30,10 @@
                     <ToggleGroup fx:id="navGroup"/>
                 </fx:define>
 
-                <ToggleButton fx:id="usersBtn" text="Users" toggleGroup="$navGroup"
+                <ToggleButton fx:id="usersBtn" text="E.C. Management" toggleGroup="$navGroup"
                               onAction="#showUsers" styleClass="nav-button"/>
 
-                <ToggleButton fx:id="assignBtn" text="Assign Coordinators" toggleGroup="$navGroup"
+                <ToggleButton fx:id="assignBtn" text="E.C. Assigning" toggleGroup="$navGroup"
                               onAction="#showAssign" styleClass="nav-button"/>
 
                 <ToggleButton fx:id="eventsBtn" text="Events" toggleGroup="$navGroup"
