@@ -184,4 +184,33 @@ public class UsersDAO {
             }
         }
     }
+    public Users login(String username, String password) throws Exception {
+        String sql = """
+        SELECT Id, Name, Email, Username, Password, Role
+        FROM Users
+        WHERE Username = ? AND Password = ?
+    """;
+
+        try (Connection conn = connectionManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Users(
+                            rs.getInt("Id"),
+                            rs.getString("Name"),
+                            rs.getString("Email"),
+                            rs.getString("Username"),
+                            rs.getString("Password"),
+                            rs.getString("Role")
+                    );
+                }
+            }
+        }
+
+        return null;
+    }
 }

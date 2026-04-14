@@ -506,3 +506,13 @@
     -fx-font-weight: 900;
     -fx-text-fill: #1D2433;
 }
+.sidebar-user-name {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+}
+
+.sidebar-user-role {
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+}

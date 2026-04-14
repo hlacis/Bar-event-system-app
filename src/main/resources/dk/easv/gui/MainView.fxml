@@ -13,7 +13,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/25"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="dk.easv.gui.AdminController"
+            fx:controller="dk.easv.gui.MainController"
             styleClass="admin-root">
 
     <!-- LEFT SIDEBAR (FULL HEIGHT) -->
@@ -44,7 +44,10 @@
             </VBox>
 
             <Region VBox.vgrow="ALWAYS"/>
-            <Label text="Role: Admin" styleClass="sidebar-footer"/>
+            <VBox spacing="2">
+                <Label fx:id="userNameLabel" styleClass="sidebar-user-name"/>
+                <Label fx:id="userRoleLabel" styleClass="sidebar-user-role"/>
+            </VBox>
         </VBox>
     </left>
 
@@ -65,7 +68,7 @@
                             minWidth="500"
                             maxWidth="500"/>
 
-                    <Label text="Admin: Jakub H." styleClass="pill"/>
+                    <Region HBox.hgrow="NEVER" prefWidth="120"/>
                     <Button text="Log Out"
                             onAction="#logout"
                             styleClass="secondary-button"

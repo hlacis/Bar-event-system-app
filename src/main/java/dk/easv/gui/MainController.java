@@ -1,17 +1,20 @@
 package dk.easv.gui;
 
+import dk.easv.be.CurrentUser;
+import dk.easv.be.Users;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.control.ToggleButton;
 
 
-public class AdminController {
+public class MainController {
 
     @FXML private ToggleButton usersBtn;
     @FXML private ToggleButton assignBtn;
@@ -21,7 +24,20 @@ public class AdminController {
     private StackPane contentHost;
 
     @FXML
+    private Label userNameLabel;
+
+    @FXML
+    private Label userRoleLabel;
+
+    @FXML
     public void initialize() {
+        Users user = CurrentUser.getUser();
+
+        if (user != null) {
+            userNameLabel.setText(user.getName());
+            userRoleLabel.setText("Role: " + user.getRole());
+        }
+
         usersBtn.setSelected(true);
         loadIntoContent("/dk/easv/gui/CoordinatorManagement.fxml");
     }

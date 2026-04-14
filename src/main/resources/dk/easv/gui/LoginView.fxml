@@ -13,7 +13,6 @@
            alignment="CENTER"
            styleClass="login-root">
 
-    <!-- Smaller card -->
     <VBox spacing="14"
           prefWidth="520"
           maxWidth="520"
@@ -23,15 +22,18 @@
 
         <VBox spacing="6">
             <Label text="Username" styleClass="field-label"/>
-            <TextField promptText="Enter username..." styleClass="login-input"/>
+            <TextField fx:id="usernameField"
+                       promptText="Enter username..."
+                       styleClass="login-input"/>
         </VBox>
 
         <VBox spacing="6">
             <Label text="Password" styleClass="field-label"/>
-            <PasswordField promptText="Enter password..." styleClass="login-input"/>
+            <PasswordField fx:id="passwordField"
+                           promptText="Enter password..."
+                           styleClass="login-input"/>
         </VBox>
 
-        <!-- Full width, tall, orange, white text -->
         <Button text="Login"
                 onAction="#onLoginClicked"
                 maxWidth="Infinity"

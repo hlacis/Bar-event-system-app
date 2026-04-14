@@ -1,0 +1,25 @@
+package dk.easv.be;
+
+public class CurrentUser {
+    private static Users user;
+
+    public static void setUser(Users loggedInUser) {
+        user = loggedInUser;
+    }
+
+    public static Users getUser() {
+        return user;
+    }
+
+    public static void clear() {
+        user = null;
+    }
+
+    public static boolean isAdmin() {
+        return user != null && "Admin".equalsIgnoreCase(user.getRole());
+    }
+
+    public static boolean isCoordinator() {
+        return user != null && "EventCoordinator".equalsIgnoreCase(user.getRole());
+    }
+}
