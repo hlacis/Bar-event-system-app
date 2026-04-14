@@ -446,7 +446,16 @@ public class EventDetailsController {
                 }
 
                 TicketPDFGenerator generator = new TicketPDFGenerator();
-                generator.generatePDF(tickets);
+                String eventName = event.getName();
+                String location = event.getLocation();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm");
+
+                String start = event.getStartTime().format(formatter);
+                String end = event.getEndTime().format(formatter);
+
+                String time = start + " - " + end;
+
+                generator.generatePDF(tickets, eventName, location, time);
 
                 //showInfo("Success", "Ticket created");
 

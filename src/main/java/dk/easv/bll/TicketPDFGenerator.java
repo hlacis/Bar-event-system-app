@@ -21,7 +21,7 @@ import dk.easv.be.Ticket;
 
 public class TicketPDFGenerator {
 
-    public void generatePDF(List<Ticket> tickets) throws Exception {
+    public void generatePDF(List<Ticket> tickets, String eventName, String location, String time) throws Exception {
 
         // Ensure folder exists
         java.io.File folder = new java.io.File("tickets");
@@ -37,7 +37,9 @@ public class TicketPDFGenerator {
         Document document = new Document(pdf);
 
         // Loop through tickets
-        for (Ticket ticket : tickets) {
+        for (int i = 0; i < tickets.size(); i++) {
+
+            Ticket ticket = tickets.get(i);
 
             // Create ticket container (card style)
             Table table = new Table(1)
@@ -55,9 +57,11 @@ public class TicketPDFGenerator {
 
             // Customer info
             table.addCell(new Cell()
+                    .add(new Paragraph("Event: " + eventName))
+                    .add(new Paragraph("Location: " + location))
+                    .add(new Paragraph("Time: " + time))
                     .add(new Paragraph("Name: " + ticket.getCustomerName()))
                     .add(new Paragraph("Email: " + ticket.getCustomerEmail()))
-                    .add(new Paragraph("Event ID: " + ticket.getEventId()))
                     .setBorder(Border.NO_BORDER));
 
             // Divider
@@ -87,9 +91,10 @@ public class TicketPDFGenerator {
             document.add(table);
 
             // New page for next ticket
-            document.add(new AreaBreak());
+            if (i < tickets.size() - 1) {
+                document.add(new AreaBreak());
+            }
         }
-
         document.close();
 
         // Open PDF (Windows)
