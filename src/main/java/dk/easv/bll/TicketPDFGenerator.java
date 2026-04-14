@@ -6,13 +6,14 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.borders.*;
 import com.itextpdf.layout.properties.*;
-import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.io.image.ImageDataFactory;
 
 import com.google.zxing.*;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 
+import java.awt.Desktop;
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -23,31 +24,25 @@ public class TicketPDFGenerator {
 
     public void generatePDF(List<Ticket> tickets, String eventName, String location, String time) throws Exception {
 
-        // Ensure folder exists
-        java.io.File folder = new java.io.File("tickets");
+        File folder = new File("tickets");
         if (!folder.exists()) {
             folder.mkdir();
         }
 
-        // Create unique file name
         String fileName = "tickets/tickets_" + System.currentTimeMillis() + ".pdf";
 
         PdfWriter writer = new PdfWriter(fileName);
         PdfDocument pdf = new PdfDocument(writer);
         Document document = new Document(pdf);
 
-        // Loop through tickets
         for (int i = 0; i < tickets.size(); i++) {
-
             Ticket ticket = tickets.get(i);
 
-            // Create ticket container (card style)
             Table table = new Table(1)
                     .useAllAvailableWidth()
                     .setBorder(new SolidBorder(2))
                     .setPadding(15);
 
-            // Title
             table.addCell(new Cell()
                     .add(new Paragraph("EASV EVENT TICKET")
                             .setBold()
@@ -55,7 +50,6 @@ public class TicketPDFGenerator {
                             .setTextAlignment(TextAlignment.CENTER))
                     .setBorder(Border.NO_BORDER));
 
-            // Customer info
             table.addCell(new Cell()
                     .add(new Paragraph("Event: " + eventName))
                     .add(new Paragraph("Location: " + location))
@@ -64,18 +58,15 @@ public class TicketPDFGenerator {
                     .add(new Paragraph("Email: " + ticket.getCustomerEmail()))
                     .setBorder(Border.NO_BORDER));
 
-            // Divider
             table.addCell(new Cell()
                     .add(new Paragraph("-----------------------------"))
                     .setTextAlignment(TextAlignment.CENTER)
                     .setBorder(Border.NO_BORDER));
 
-            // Ticket ID
             table.addCell(new Cell()
                     .add(new Paragraph("Ticket ID: " + ticket.getId()))
                     .setBorder(Border.NO_BORDER));
 
-            // QR section
             String qrPath = generateQRCode(ticket.getId());
             Image qrImage = new Image(ImageDataFactory.create(qrPath));
             qrImage.scaleToFit(120, 120);
@@ -87,31 +78,41 @@ public class TicketPDFGenerator {
                     .add(qrImage)
                     .setBorder(Border.NO_BORDER));
 
-            // Add ticket to document
             document.add(table);
 
-            // New page for next ticket
             if (i < tickets.size() - 1) {
                 document.add(new AreaBreak());
             }
         }
+
         document.close();
 
-        // Open PDF (Windows)
-        java.io.File file = new java.io.File(fileName);
+        File file = new File(fileName);
+        openPdf(file);
+    }
 
+    private void openPdf(File file) {
         try {
-            Runtime.getRuntime().exec(
-                    "rundll32 url.dll,FileProtocolHandler \"" + file.getAbsolutePath() + "\""
-            );
+            if (Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().open(file);
+                return;
+            }
+
+            String os = System.getProperty("os.name").toLowerCase();
+
+            if (os.contains("mac")) {
+                new ProcessBuilder("open", file.getAbsolutePath()).start();
+            } else if (os.contains("win")) {
+                new ProcessBuilder("rundll32", "url.dll,FileProtocolHandler", file.getAbsolutePath()).start();
+            } else if (os.contains("nix") || os.contains("nux")) {
+                new ProcessBuilder("xdg-open", file.getAbsolutePath()).start();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // Generate QR code image
     private String generateQRCode(String text) throws Exception {
-
         int width = 200;
         int height = 200;
 
