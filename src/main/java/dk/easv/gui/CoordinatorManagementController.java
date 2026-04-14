@@ -1,6 +1,6 @@
 package dk.easv.gui;
 
-import dk.easv.be.EventCoordinator;
+import dk.easv.be.Users;
 import dk.easv.bll.EventManager;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -79,8 +79,8 @@ public class CoordinatorManagementController {
         Task<UserCardData> createTask = new Task<>() {
             @Override
             protected UserCardData call() throws Exception {
-                EventCoordinator coordinator = new EventCoordinator(name, email, username, password);
-                EventCoordinator created = eventManager.createCoordinator(coordinator);
+                Users coordinator = new Users(name, email, username, password, "EventCoordinator");
+                Users created = eventManager.createCoordinator(coordinator);
                 return new UserCardData(created, 0);
             }
         };
@@ -144,10 +144,10 @@ public class CoordinatorManagementController {
         Task<List<UserCardData>> loadTask = new Task<>() {
             @Override
             protected List<UserCardData> call() throws Exception {
-                List<EventCoordinator> coordinators = eventManager.getAllCoordinators();
+                List<Users> coordinators = eventManager.getAllCoordinators();
                 List<UserCardData> result = new ArrayList<>();
 
-                for (EventCoordinator coordinator : coordinators) {
+                for (Users coordinator : coordinators) {
                     int eventCount = eventManager.getEventCountForCoordinator(coordinator.getId());
                     result.add(new UserCardData(coordinator, eventCount));
                 }
@@ -184,7 +184,7 @@ public class CoordinatorManagementController {
         List<UserCardData> filtered = new ArrayList<>();
 
         for (UserCardData data : loadedCoordinators) {
-            EventCoordinator coordinator = data.coordinator();
+            Users coordinator = data.coordinator();
             if (coordinator.getName().toLowerCase().contains(q)
                     || coordinator.getEmail().toLowerCase().contains(q)
                     || coordinator.getUsername().toLowerCase().contains(q)) {
@@ -211,7 +211,7 @@ public class CoordinatorManagementController {
     }
 
     private GridPane createCoordinatorCard(UserCardData data) {
-        EventCoordinator coordinator = data.coordinator();
+        Users coordinator = data.coordinator();
 
         GridPane row = new GridPane();
         row.getStyleClass().addAll("card", "user-row-grid");
@@ -263,7 +263,7 @@ public class CoordinatorManagementController {
         return row;
     }
 
-    private void removeCoordinator(EventCoordinator coordinator) {
+    private void removeCoordinator(Users coordinator) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Remove Coordinator");
         confirm.setHeaderText(null);
@@ -311,5 +311,5 @@ public class CoordinatorManagementController {
         });
     }
 
-    private record UserCardData(EventCoordinator coordinator, int eventCount) {}
+    private record UserCardData(Users coordinator, int eventCount) {}
 }

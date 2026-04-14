@@ -1,8 +1,8 @@
 package dk.easv.bll;
 
 import dk.easv.be.Event;
-import dk.easv.be.EventCoordinator;
-import dk.easv.dal.dao.EventCoordinatorDAO;
+import dk.easv.be.Users;
+import dk.easv.dal.dao.UsersDAO;
 import dk.easv.dal.dao.EventDAO;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
 public class EventManager {
 
     private final EventDAO eventDAO = new EventDAO();
-    private final EventCoordinatorDAO eventCoordinatorDAO = new EventCoordinatorDAO();
+    private final UsersDAO usersDAO = new UsersDAO();
     private final Checker checker = new Checker();
 
     public Event createEvent(Event event) throws Exception {
@@ -39,28 +39,28 @@ public class EventManager {
         eventDAO.updateEvent(event);
     }
 
-    public List<EventCoordinator> getAllCoordinators() throws Exception {
-        return eventCoordinatorDAO.getAllCoordinators();
+    public List<Users> getAllCoordinators() throws Exception {
+        return usersDAO.getAllCoordinators();
 
     }
 
     public List<Integer> getCoordinatorIdsForEvent(int eventId) throws Exception {
 
-        return eventCoordinatorDAO.getCoordinatorIdsForEvent(eventId);
+        return usersDAO.getCoordinatorIdsForEvent(eventId);
     }
 
     public List<String> getCoordinatorNamesForEvent(int eventId) throws Exception {
-        return eventCoordinatorDAO.getCoordinatorNamesForEvent(eventId);
+        return usersDAO.getCoordinatorNamesForEvent(eventId);
     }
 
     public void replaceCoordinatorsForEvent(int eventId, List<Integer> coordinatorIds) throws Exception {
-        eventCoordinatorDAO.replaceCoordinatorsForEvent(eventId, coordinatorIds);
+        usersDAO.replaceCoordinatorsForEvent(eventId, coordinatorIds);
     }
     public int getEventCountForCoordinator(int coordinatorId) throws Exception {
-        return eventCoordinatorDAO.getEventCountForCoordinator(coordinatorId);
+        return usersDAO.getEventCountForCoordinator(coordinatorId);
     }
 
-    public void deleteCoordinator(EventCoordinator coordinator) throws Exception {
+    public void deleteCoordinator(Users coordinator) throws Exception {
         if (coordinator == null) {
             throw new Exception("Coordinator is missing.");
         }
@@ -69,9 +69,9 @@ public class EventManager {
             throw new Exception("Invalid coordinator id.");
         }
 
-        eventCoordinatorDAO.deleteCoordinator(coordinator.getId());
+        usersDAO.deleteCoordinator(coordinator.getId());
     }
-    public EventCoordinator createCoordinator(EventCoordinator coordinator) throws Exception {
+    public Users createCoordinator(Users coordinator) throws Exception {
         if (coordinator == null) {
             throw new Exception("Coordinator is missing.");
         }
@@ -92,7 +92,7 @@ public class EventManager {
             throw new Exception("Coordinator password is required.");
         }
 
-        return eventCoordinatorDAO.createCoordinator(coordinator);
+        return usersDAO.createCoordinator(coordinator);
     }
 
 }
