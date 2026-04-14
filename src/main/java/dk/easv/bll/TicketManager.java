@@ -25,6 +25,14 @@ public class TicketManager {
 
         return ticket;
     }
+
+    public void createTicketWithPDF(int eventId, int ticketTypeId, String name, String email) throws Exception {
+
+        Ticket ticket = createTicket(eventId, ticketTypeId, name, email);
+
+        TicketPDFGenerator generator = new TicketPDFGenerator();
+        generator.generatePDF(ticket);
+    }
 }
 
 

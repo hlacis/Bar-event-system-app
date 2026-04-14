@@ -20,7 +20,12 @@ public class TicketPDFGenerator {
 
     public void generatePDF(Ticket ticket) throws Exception {
 
-        String fileName = "ticket_" + ticket.getId() + ".pdf";
+        // ensure folder exists
+        java.io.File folder = new java.io.File("tickets");
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
+        String fileName = "tickets/ticket_" + ticket.getId() + ".pdf";
 
         PdfWriter writer = new PdfWriter(fileName);
         PdfDocument pdf = new PdfDocument(writer);
@@ -57,8 +62,15 @@ public class TicketPDFGenerator {
 
         document.close();
 
-        // open PDF automatically
-        java.awt.Desktop.getDesktop().open(new java.io.File(fileName));
+        java.io.File file = new java.io.File(fileName);
+
+        try {
+            Runtime.getRuntime().exec(
+                    "rundll32 url.dll,FileProtocolHandler \"" + file.getAbsolutePath() + "\""
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     private String generateQRCode(String text) throws Exception {
 
@@ -68,7 +80,7 @@ public class TicketPDFGenerator {
         BitMatrix matrix = new MultiFormatWriter()
                 .encode(text, BarcodeFormat.QR_CODE, width, height);
 
-        String filePath = "qr_" + text + ".png";
+        String filePath = "tickets/qr_" + text + ".png";
         Path path = Paths.get(filePath);
 
         MatrixToImageWriter.writeToPath(matrix, "PNG", path);

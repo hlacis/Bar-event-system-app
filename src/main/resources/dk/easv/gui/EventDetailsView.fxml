@@ -42,7 +42,6 @@
                 prefHeight="46"
                 onAction="#handlePrintTickets"/>
 
-
         <!-- Edit button -->
         <Button text="Edit"
                 styleClass="primary-button"

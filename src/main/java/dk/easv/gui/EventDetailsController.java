@@ -23,6 +23,7 @@ import java.time.format.DateTimeFormatter;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import java.util.Optional;
+import javafx.scene.layout.VBox;
 
 public class EventDetailsController {
 
@@ -247,13 +248,13 @@ public class EventDetailsController {
             Optional<ButtonType> result = alert.showAndWait();
 
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                // ✅ User clicked OK → delete
+                // User clicked OK → delete
                 ticketTypeManager.deleteTicketType(selected.getId());
                 loadTicketTypes();
 
                 System.out.println("Ticket deleted");
             } else {
-                // ❌ User cancelled
+                // User cancelled
                 System.out.println("Delete cancelled");
             }
 
@@ -364,30 +365,74 @@ public class EventDetailsController {
             return;
         }
 
-        try {
-            // Create ticket in database
-            TicketManager manager = new TicketManager();
+        // Create dialog
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Creating Ticket");
 
-            Ticket ticket = manager.createTicket(
-                    event.getId(),
-                    selected.getId(),
-                    "Test Name",
-                    "test@mail.com"
-            );
+        // Input fields
+        TextField nameField = new TextField();
+        nameField.setPromptText("Name");
 
-            // Generate PDF with QR code
-            TicketPDFGenerator pdfGen = new TicketPDFGenerator();
-            pdfGen.generatePDF(ticket);
+        TextField emailField = new TextField();
+        emailField.setPromptText("Email");
 
-            // Show success message
-            showInfo("Success", "Ticket created and PDF generated");
+        // Layout
+        VBox content = new VBox(10,
+                new Label("Enter customer info"),
+                nameField,
+                emailField
+        );
+        content.setStyle("-fx-padding: 20;");
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            showError("Could not create ticket");
+        dialog.getDialogPane().setContent(content);
+
+        // Buttons
+        ButtonType createButton = new ButtonType("Create", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        dialog.getDialogPane().getButtonTypes().addAll(createButton, cancelButton);
+
+        // Disable create button if fields empty
+        Node createBtn = dialog.getDialogPane().lookupButton(createButton);
+        createBtn.setDisable(true);
+
+        nameField.textProperty().addListener((obs, oldVal, newVal) -> {
+            createBtn.setDisable(newVal.trim().isEmpty() || emailField.getText().trim().isEmpty());
+        });
+
+        emailField.textProperty().addListener((obs, oldVal, newVal) -> {
+            createBtn.setDisable(newVal.trim().isEmpty() || nameField.getText().trim().isEmpty());
+        });
+
+        // Show dialog
+        Optional<ButtonType> result = dialog.showAndWait();
+
+        if (result.isPresent() && result.get() == createButton) {
+
+            try {
+                String name = nameField.getText();
+                String email = emailField.getText();
+
+                TicketManager manager = new TicketManager();
+
+                Ticket ticket = manager.createTicket(
+                        event.getId(),
+                        selected.getId(),
+                        name,
+                        email
+                );
+
+                TicketPDFGenerator generator = new TicketPDFGenerator();
+                generator.generatePDF(ticket);
+
+                //showInfo("Success", "Ticket created");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                showError("Could not create ticket");
+            }
         }
     }
-
 
     @FXML
     private void handleEdit() {
