@@ -1,22 +1,22 @@
 package dk.easv.dal.dao;
 
-import dk.easv.be.EventCoordinator;
+import dk.easv.be.Users;
 import dk.easv.dal.ConnectionManager;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventCoordinatorDAO {
+public class UsersDAO {
 
     private final ConnectionManager connectionManager;
 
-    public EventCoordinatorDAO() {
+    public UsersDAO() {
         connectionManager = new ConnectionManager();
     }
 
-    public EventCoordinator createCoordinator(EventCoordinator coordinator) throws Exception {
-        String sql = "INSERT INTO EventCoordinator (Name, Email, Username, Password) VALUES (?, ?, ?, ?)";
+    public Users createCoordinator(Users coordinator) throws Exception {
+        String sql = "INSERT INTO Users (Name, Email, Username, Password, Role) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = connectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -25,6 +25,7 @@ public class EventCoordinatorDAO {
             stmt.setString(2, coordinator.getEmail());
             stmt.setString(3, coordinator.getUsername());
             stmt.setString(4, coordinator.getPassword());
+            stmt.setString(5, "EventCoordinator");
 
             stmt.executeUpdate();
 
@@ -37,22 +38,28 @@ public class EventCoordinatorDAO {
         }
     }
 
-    public List<EventCoordinator> getAllCoordinators() throws Exception {
-        List<EventCoordinator> coordinators = new ArrayList<>();
+    public List<Users> getAllCoordinators() throws Exception {
+        List<Users> coordinators = new ArrayList<>();
 
-        String sql = "SELECT Id, Name, Email, Username, Password FROM EventCoordinator ORDER BY Name";
+        String sql = """
+                SELECT Id, Name, Email, Username, Password, Role
+                FROM Users
+                WHERE Role = 'EventCoordinator'
+                ORDER BY Name
+                """;
 
         try (Connection conn = connectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                coordinators.add(new EventCoordinator(
+                coordinators.add(new Users(
                         rs.getInt("Id"),
                         rs.getString("Name"),
                         rs.getString("Email"),
                         rs.getString("Username"),
-                        rs.getString("Password")
+                        rs.getString("Password"),
+                        rs.getString("Role")
                 ));
             }
         }
@@ -63,7 +70,7 @@ public class EventCoordinatorDAO {
     public List<Integer> getCoordinatorIdsForEvent(int eventId) throws Exception {
         List<Integer> coordinatorIds = new ArrayList<>();
 
-        String sql = "SELECT CoordinatorId FROM Event_EventCoordinator WHERE EventId = ?";
+        String sql = "SELECT UserId FROM Event_User WHERE EventId = ?";
 
         try (Connection conn = connectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -72,23 +79,25 @@ public class EventCoordinatorDAO {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    coordinatorIds.add(rs.getInt("CoordinatorId"));
+                    coordinatorIds.add(rs.getInt("UserId"));
                 }
             }
         }
 
         return coordinatorIds;
     }
+
     public List<String> getCoordinatorNamesForEvent(int eventId) throws Exception {
         List<String> names = new ArrayList<>();
 
         String sql = """
-            SELECT ec.Name
-            FROM Event_EventCoordinator eec
-            JOIN EventCoordinator ec ON eec.CoordinatorId = ec.Id
-            WHERE eec.EventId = ?
-            ORDER BY ec.Name
-            """;
+                SELECT u.Name
+                FROM Event_User eu
+                JOIN Users u ON eu.UserId = u.Id
+                WHERE eu.EventId = ?
+                AND u.Role = 'EventCoordinator'
+                ORDER BY u.Name
+                """;
 
         try (Connection conn = connectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -106,8 +115,8 @@ public class EventCoordinatorDAO {
     }
 
     public void replaceCoordinatorsForEvent(int eventId, List<Integer> coordinatorIds) throws Exception {
-        String deleteSql = "DELETE FROM Event_EventCoordinator WHERE EventId = ?";
-        String insertSql = "INSERT INTO Event_EventCoordinator (EventId, CoordinatorId) VALUES (?, ?)";
+        String deleteSql = "DELETE FROM Event_User WHERE EventId = ?";
+        String insertSql = "INSERT INTO Event_User (EventId, UserId) VALUES (?, ?)";
 
         try (Connection conn = connectionManager.getConnection()) {
             conn.setAutoCommit(false);
@@ -132,8 +141,9 @@ public class EventCoordinatorDAO {
             throw e;
         }
     }
+
     public int getEventCountForCoordinator(int coordinatorId) throws Exception {
-        String sql = "SELECT COUNT(*) AS EventCount FROM Event_EventCoordinator WHERE CoordinatorId = ?";
+        String sql = "SELECT COUNT(*) AS EventCount FROM Event_User WHERE UserId = ?";
 
         try (Connection conn = connectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -151,8 +161,8 @@ public class EventCoordinatorDAO {
     }
 
     public void deleteCoordinator(int coordinatorId) throws Exception {
-        String deleteAssignmentsSql = "DELETE FROM Event_EventCoordinator WHERE CoordinatorId = ?";
-        String deleteCoordinatorSql = "DELETE FROM EventCoordinator WHERE Id = ?";
+        String deleteAssignmentsSql = "DELETE FROM Event_User WHERE UserId = ?";
+        String deleteCoordinatorSql = "DELETE FROM Users WHERE Id = ? AND Role = 'EventCoordinator'";
 
         try (Connection conn = connectionManager.getConnection()) {
             conn.setAutoCommit(false);

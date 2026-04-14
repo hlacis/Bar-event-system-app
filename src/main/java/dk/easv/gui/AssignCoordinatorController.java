@@ -1,7 +1,7 @@
 package dk.easv.gui;
 
 import dk.easv.be.Event;
-import dk.easv.be.EventCoordinator;
+import dk.easv.be.Users;
 import dk.easv.bll.EventManager;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -69,7 +69,7 @@ public class AssignCoordinatorController {
             @Override
             protected AssignDataBundle call() throws Exception {
                 List<Event> events = eventManager.getAllEvents();
-                List<EventCoordinator> coordinators = eventManager.getAllCoordinators();
+                List<Users> coordinators = eventManager.getAllCoordinators();
                 return new AssignDataBundle(events, coordinators);
             }
         };
@@ -146,11 +146,11 @@ public class AssignCoordinatorController {
         return event.getStartTime().format(formatter) + " • " + event.getLocation();
     }
 
-    private void loadCoordinatorCheckboxes(List<EventCoordinator> coordinators) {
+    private void loadCoordinatorCheckboxes(List<Users> coordinators) {
         coordinatorCheckboxContainer.getChildren().clear();
         coordinatorCheckBoxMap.clear();
 
-        for (EventCoordinator coordinator : coordinators) {
+        for (Users coordinator : coordinators) {
             CheckBox checkBox = new CheckBox(coordinator.getName());
             checkBox.getStyleClass().add("muted");
             coordinatorCheckBoxMap.put(coordinator.getId(), checkBox);
@@ -245,5 +245,5 @@ public class AssignCoordinatorController {
         alert.showAndWait();
     }
 
-    private record AssignDataBundle(List<Event> events, List<EventCoordinator> coordinators) {}
+    private record AssignDataBundle(List<Event> events, List<Users> coordinators) {}
 }
