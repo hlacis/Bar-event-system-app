@@ -6,6 +6,8 @@ import dk.easv.be.TicketType;
 import dk.easv.be.Voucher;
 import dk.easv.bll.TicketManager;
 import dk.easv.bll.TicketPDFGenerator;
+import java.util.List;
+import java.util.ArrayList;
 import dk.easv.bll.TicketTypeManager;
 import dk.easv.bll.VoucherManager;
 import javafx.fxml.FXML;
@@ -176,8 +178,6 @@ public class EventDetailsController {
             e.printStackTrace();
         }
     }
-
-
 
     @FXML
     private void handleEditTicketType() {
@@ -376,11 +376,15 @@ public class EventDetailsController {
         TextField emailField = new TextField();
         emailField.setPromptText("Email");
 
+        TextField amountField = new TextField();
+        amountField.setPromptText("Amount");
+
         // Layout
         VBox content = new VBox(10,
                 new Label("Enter customer info"),
                 nameField,
-                emailField
+                emailField,
+                amountField
         );
         content.setStyle("-fx-padding: 20;");
 
@@ -413,17 +417,36 @@ public class EventDetailsController {
                 String name = nameField.getText();
                 String email = emailField.getText();
 
-                TicketManager manager = new TicketManager();
+                int amount;
 
-                Ticket ticket = manager.createTicket(
-                        event.getId(),
-                        selected.getId(),
-                        name,
-                        email
-                );
+                try {
+                    amount = Integer.parseInt(amountField.getText());
+                } catch (Exception e) {
+                    showError("Enter a valid number");
+                    return;
+                }
+
+                if (amount <= 0) {
+                    showError("Amount must be at least 1");
+                    return;
+                }
+
+
+                TicketManager manager = new TicketManager();
+                List<Ticket> tickets = new ArrayList<>();
+
+                for (int i = 0; i < amount; i++) {
+                    Ticket t = manager.createTicket(
+                            event.getId(),
+                            selected.getId(),
+                            name,
+                            email
+                    );
+                    tickets.add(t);
+                }
 
                 TicketPDFGenerator generator = new TicketPDFGenerator();
-                generator.generatePDF(ticket);
+                generator.generatePDF(tickets);
 
                 //showInfo("Success", "Ticket created");
 

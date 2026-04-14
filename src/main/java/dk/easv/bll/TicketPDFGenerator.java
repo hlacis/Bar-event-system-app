@@ -3,65 +3,96 @@ package dk.easv.bll;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.*;
+import com.itextpdf.layout.borders.*;
+import com.itextpdf.layout.properties.*;
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.io.image.ImageDataFactory;
+
 import com.google.zxing.*;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import com.itextpdf.io.image.ImageDataFactory;
-import com.itextpdf.layout.element.Image;
+import java.util.List;
 
 import dk.easv.be.Ticket;
 
 public class TicketPDFGenerator {
 
-    public void generatePDF(Ticket ticket) throws Exception {
+    public void generatePDF(List<Ticket> tickets) throws Exception {
 
-        // ensure folder exists
+        // Ensure folder exists
         java.io.File folder = new java.io.File("tickets");
         if (!folder.exists()) {
             folder.mkdir();
         }
-        String fileName = "tickets/ticket_" + ticket.getId() + ".pdf";
+
+        // Create unique file name
+        String fileName = "tickets/tickets_" + System.currentTimeMillis() + ".pdf";
 
         PdfWriter writer = new PdfWriter(fileName);
         PdfDocument pdf = new PdfDocument(writer);
         Document document = new Document(pdf);
 
-        // Title
-        document.add(new Paragraph("EASV EVENT TICKET")
-                .setBold()
-                .setFontSize(20));
+        // Loop through tickets
+        for (Ticket ticket : tickets) {
 
-        document.add(new Paragraph(" "));
+            // Create ticket container (card style)
+            Table table = new Table(1)
+                    .useAllAvailableWidth()
+                    .setBorder(new SolidBorder(2))
+                    .setPadding(15);
 
-        // Ticket info
-        document.add(new Paragraph("Name: " + ticket.getCustomerName()));
-        document.add(new Paragraph("Email: " + ticket.getCustomerEmail()));
-        document.add(new Paragraph("Event ID: " + ticket.getEventId()));
+            // Title
+            table.addCell(new Cell()
+                    .add(new Paragraph("EASV EVENT TICKET")
+                            .setBold()
+                            .setFontSize(20)
+                            .setTextAlignment(TextAlignment.CENTER))
+                    .setBorder(Border.NO_BORDER));
 
-        document.add(new Paragraph(" "));
+            // Customer info
+            table.addCell(new Cell()
+                    .add(new Paragraph("Name: " + ticket.getCustomerName()))
+                    .add(new Paragraph("Email: " + ticket.getCustomerEmail()))
+                    .add(new Paragraph("Event ID: " + ticket.getEventId()))
+                    .setBorder(Border.NO_BORDER));
 
-        // Divider
-        document.add(new Paragraph("-----------------------------"));
+            // Divider
+            table.addCell(new Cell()
+                    .add(new Paragraph("-----------------------------"))
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setBorder(Border.NO_BORDER));
 
-        document.add(new Paragraph("Ticket ID: " + ticket.getId()));
+            // Ticket ID
+            table.addCell(new Cell()
+                    .add(new Paragraph("Ticket ID: " + ticket.getId()))
+                    .setBorder(Border.NO_BORDER));
 
-        document.add(new Paragraph(" "));
+            // QR section
+            String qrPath = generateQRCode(ticket.getId());
+            Image qrImage = new Image(ImageDataFactory.create(qrPath));
+            qrImage.scaleToFit(120, 120);
+            qrImage.setHorizontalAlignment(HorizontalAlignment.CENTER);
 
-        // QR code
-        String qrPath = generateQRCode(ticket.getId());
-        Image qrImage = new Image(ImageDataFactory.create(qrPath));
-        qrImage.scaleToFit(120, 120);
+            table.addCell(new Cell()
+                    .add(new Paragraph("Scan for entry")
+                            .setTextAlignment(TextAlignment.CENTER))
+                    .add(qrImage)
+                    .setBorder(Border.NO_BORDER));
 
-        document.add(new Paragraph("Scan for entry"));
-        document.add(qrImage);
+            // Add ticket to document
+            document.add(table);
+
+            // New page for next ticket
+            document.add(new AreaBreak());
+        }
 
         document.close();
 
+        // Open PDF (Windows)
         java.io.File file = new java.io.File(fileName);
 
         try {
@@ -72,6 +103,8 @@ public class TicketPDFGenerator {
             e.printStackTrace();
         }
     }
+
+    // Generate QR code image
     private String generateQRCode(String text) throws Exception {
 
         int width = 200;
