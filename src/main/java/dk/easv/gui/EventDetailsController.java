@@ -3,9 +3,11 @@ package dk.easv.gui;
 import dk.easv.be.Event;
 import dk.easv.be.Ticket;
 import dk.easv.be.TicketType;
+import dk.easv.be.Voucher;
 import dk.easv.bll.TicketManager;
 import dk.easv.bll.TicketPDFGenerator;
 import dk.easv.bll.TicketTypeManager;
+import dk.easv.bll.VoucherManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -40,8 +42,20 @@ public class EventDetailsController {
     @FXML private TableColumn<TicketType, Integer> colQuantity;
     @FXML private TableColumn<TicketType, String> colNote;
 
+    // ===== VOUCHER UI =====
+    @FXML private TextField txtVoucherName;
+    @FXML private TextField txtVoucherValue;
+
+    @FXML private TableView<Voucher> voucherTable;
+    @FXML private TableColumn<Voucher, String> colVoucherName;
+    @FXML private TableColumn<Voucher, String> colVoucherType;
+    @FXML private TableColumn<Voucher, Double> colVoucherValue;
+
     private Event event;
     private TicketTypeManager ticketTypeManager = new TicketTypeManager();
+
+    private VoucherManager voucherManager = new VoucherManager();
+    private ObservableList<Voucher> voucherList = FXCollections.observableArrayList();
     private ObservableList<TicketType> ticketList = FXCollections.observableArrayList();
 
     @FXML
@@ -50,6 +64,12 @@ public class EventDetailsController {
         colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
         colQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         colNote.setCellValueFactory(new PropertyValueFactory<>("note"));
+
+        colVoucherName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colVoucherType.setCellValueFactory(new PropertyValueFactory<>("type"));
+        colVoucherValue.setCellValueFactory(new PropertyValueFactory<>("value"));
+
+        voucherTable.setItems(voucherList);
 
         //Table spacing
         colName.setPrefWidth(160);
@@ -76,6 +96,16 @@ public class EventDetailsController {
                 txtNote.setText(selected.getNote());
             }
         });
+
+        voucherTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, selected) -> {
+            if (selected != null) {
+                txtVoucherName.setText(selected.getName());
+                txtVoucherValue.setText(String.valueOf(selected.getValue()));
+            }else  {
+                txtVoucherName.clear();
+                txtVoucherValue.clear();
+            }
+        });
     }
 
     @FXML
@@ -100,6 +130,7 @@ public class EventDetailsController {
         }
 
         loadTicketTypes();
+        loadVouchers();
     }
 
     private void loadTicketTypes() {
@@ -110,6 +141,16 @@ public class EventDetailsController {
             e.printStackTrace();
         }
     }
+
+    private void loadVouchers() {
+        try {
+            voucherList.clear();
+            voucherList.addAll(voucherManager.getVouchersByEvent(event.getId()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    //Ticket Type Methods
 
     @FXML
     private void handleAddTicketType() {
@@ -134,6 +175,8 @@ public class EventDetailsController {
             e.printStackTrace();
         }
     }
+
+
 
     @FXML
     private void handleEditTicketType() {
@@ -195,7 +238,7 @@ public class EventDetailsController {
                 return;
             }
 
-            // ✅ Confirmation popup
+            // Confirmation popup
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Confirm Delete");
             alert.setHeaderText(null);
@@ -218,6 +261,98 @@ public class EventDetailsController {
             e.printStackTrace();
         }
     }
+
+    //Voucher Methods
+    @FXML
+    private void handleAddVoucher() {
+        try {
+            String name = txtVoucherName.getText();
+            double value = Double.parseDouble(txtVoucherValue.getText());
+
+            // Temporary type (you can improve later)
+            String type = "DISCOUNT";
+
+            Voucher voucher = new Voucher(
+                    event.getId(),
+                    name,
+                    type,
+                    value
+            );
+
+            voucherManager.createVoucher(voucher);
+
+            loadVouchers();
+
+            txtVoucherName.clear();
+            txtVoucherValue.clear();
+
+            showInfo("Success", "Voucher created!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Could not create voucher");
+        }
+    }
+
+    @FXML
+    private void handleEditVoucher() {
+        try {
+            Voucher selected = voucherTable.getSelectionModel().getSelectedItem();
+
+            if (selected == null) {
+                showError("No voucher selected");
+                return;
+            }
+
+            String name = txtVoucherName.getText();
+            double value = Double.parseDouble(txtVoucherValue.getText());
+
+            selected.setName(name);
+            selected.setValue(value);
+
+            voucherManager.updateVoucher(selected);
+
+            loadVouchers();
+
+            txtVoucherName.clear();
+            txtVoucherValue.clear();
+
+            showInfo("Success", "Voucher updated!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Could not update voucher");
+        }
+    }
+
+    @FXML
+    private void handleDeleteVoucher() {
+        try {
+            Voucher selected = voucherTable.getSelectionModel().getSelectedItem();
+
+            if (selected == null) {
+                showError("No voucher selected");
+                return;
+            }
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirm Delete");
+            alert.setHeaderText(null);
+            alert.setContentText("Are you sure you want to delete this voucher?");
+
+            Optional<ButtonType> result = alert.showAndWait();
+
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                voucherManager.deleteVoucher(selected.getId());
+                loadVouchers();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Could not delete voucher");
+        }
+    }
+
 
     @FXML
     private void handlePrintTickets() {

@@ -103,6 +103,15 @@
                     onAction="#handleDeleteTicketType"/>
         </HBox>
 
+        <!-- Voucher Table -->
+        <TableView fx:id="voucherTable" prefHeight="200">
+            <columns>
+                <TableColumn fx:id="colVoucherName" text="Name"/>
+                <TableColumn fx:id="colVoucherType" text="Type"/>
+                <TableColumn fx:id="colVoucherValue" text="Value"/>
+            </columns>
+        </TableView>
+
         <!-- Table -->
         <TableView fx:id="ticketTable" prefHeight="220">
             <columns>
