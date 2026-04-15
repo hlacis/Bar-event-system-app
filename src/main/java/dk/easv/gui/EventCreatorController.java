@@ -113,8 +113,11 @@ public class EventCreatorController {
                 eventManager.updateEvent(eventToEdit);
                 showInfo("Success", "Event updated successfully.");
             }
-
-            loadEventsView();
+            if (eventToEdit == null) {
+                loadEventsView();
+            } else {
+                loadEventDetailsView(eventToEdit);
+            }
 
         } catch (Exception e) {
             showError("Something went wrong: " + e.getMessage());
@@ -184,6 +187,27 @@ public class EventCreatorController {
         } catch (Exception e) {
             e.printStackTrace();
             showError("Could not return to Events view.");
+        }
+    }
+    private void loadEventDetailsView(Event event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/dk/easv/gui/EventDetailsView.fxml")
+            );
+
+            Parent view = loader.load();
+
+            EventDetailsController controller = loader.getController();
+            controller.setEvent(event);
+
+            StackPane contentHost = findContentHost(nameField);
+            if (contentHost != null) {
+                contentHost.getChildren().setAll(view);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Could not return to event details.");
         }
     }
 
