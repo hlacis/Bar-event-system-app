@@ -386,18 +386,40 @@ public class EventDetailsController {
                 emailField,
                 amountField
         );
-        content.setStyle("-fx-padding: 20;");
+        content.setStyle(
+                "-fx-padding: 20;" +
+                        "-fx-background-color: white;" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-border-radius: 10;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10,0,0,2);"
+        );
 
-        dialog.getDialogPane().setContent(content);
+        DialogPane pane = dialog.getDialogPane();
+
+        pane.setContent(content);
+
+        pane.lookup(".button-bar").setStyle(
+                "-fx-alignment: center;"
+        );
 
         // Buttons
         ButtonType createButton = new ButtonType("Create", ButtonBar.ButtonData.OK_DONE);
         ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 
         dialog.getDialogPane().getButtonTypes().addAll(createButton, cancelButton);
+        Node createBtn = pane.lookupButton(createButton);
+
+        createBtn.setStyle(
+                "-fx-background-color: #ff7a00;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-weight: bold;"
+        );
+        ButtonBar buttonBar = (ButtonBar) pane.lookup(".button-bar");
+        buttonBar.setButtonOrder(ButtonBar.BUTTON_ORDER_NONE);
+        buttonBar.setStyle("-fx-alignment: center; -fx-padding: 10;");
 
         // Disable create button if fields empty
-        Node createBtn = dialog.getDialogPane().lookupButton(createButton);
+        //Node createBtn = dialog.getDialogPane().lookupButton(createButton);
         createBtn.setDisable(true);
 
         amountField.textProperty().addListener((obs, oldVal, newVal) -> {
