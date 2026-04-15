@@ -9,6 +9,7 @@ public class TicketType {
     private double price;
     private int quantity;
     private String note;
+    private int ticketsLeft;
 
     //Constructors 2
 
@@ -75,6 +76,14 @@ public class TicketType {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public int getTicketsLeft() {
+        return ticketsLeft;
+    }
+
+    public void setTicketsLeft(int ticketsLeft) {
+        this.ticketsLeft = ticketsLeft;
     }
 }
 

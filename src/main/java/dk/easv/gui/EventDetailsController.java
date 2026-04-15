@@ -400,12 +400,16 @@ public class EventDetailsController {
         Node createBtn = dialog.getDialogPane().lookupButton(createButton);
         createBtn.setDisable(true);
 
+        amountField.textProperty().addListener((obs, oldVal, newVal) -> {
+            validateForm(nameField, emailField, amountField, selected, createBtn);
+        });
+
         nameField.textProperty().addListener((obs, oldVal, newVal) -> {
-            createBtn.setDisable(newVal.trim().isEmpty() || emailField.getText().trim().isEmpty());
+            validateForm(nameField, emailField, amountField, selected, createBtn);
         });
 
         emailField.textProperty().addListener((obs, oldVal, newVal) -> {
-            createBtn.setDisable(newVal.trim().isEmpty() || nameField.getText().trim().isEmpty());
+            validateForm(nameField, emailField, amountField, selected, createBtn);
         });
 
         // Show dialog
@@ -430,6 +434,10 @@ public class EventDetailsController {
                     showError("Amount must be at least 1");
                     return;
                 }
+                if (amount > selected.getTicketsLeft()) {
+                    showError("Not enough tickets available");
+                    return;
+                }
 
 
                 TicketManager manager = new TicketManager();
@@ -444,6 +452,10 @@ public class EventDetailsController {
                     );
                     tickets.add(t);
                 }
+                selected.setTicketsLeft(selected.getTicketsLeft() - amount);
+
+                TicketTypeManager ticketTypeManager = new TicketTypeManager();
+                ticketTypeManager.updateTicketType(selected);
 
                 TicketPDFGenerator generator = new TicketPDFGenerator();
                 String eventName = event.getName();
@@ -463,6 +475,24 @@ public class EventDetailsController {
                 e.printStackTrace();
                 showError("Could not create ticket");
             }
+        }
+    }
+    private void validateForm(TextField nameField, TextField emailField,
+                              TextField amountField, TicketType selected, Node createBtn) {
+
+        try {
+            int amount = Integer.parseInt(amountField.getText());
+
+            boolean invalid =
+                    amount <= 0 ||
+                            nameField.getText().trim().isEmpty() ||
+                            emailField.getText().trim().isEmpty() ||
+                            amount > selected.getTicketsLeft();
+
+            createBtn.setDisable(invalid);
+
+        } catch (Exception e) {
+            createBtn.setDisable(true);
         }
     }
 

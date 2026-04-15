@@ -38,7 +38,7 @@ public class TicketTypeDAO {
     }
 
     public void updateTicketType(TicketType tt) throws Exception {
-        String sql = "UPDATE TicketType SET Name=?, Price=?, Quantity=?, Note=? WHERE Id=?";
+        String sql = "UPDATE TicketType SET Name = ?, Price = ?, Quantity = ?, Note = ?, ticketsLeft = ? WHERE Id = ?";
 
         try (Connection conn = connectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -47,7 +47,8 @@ public class TicketTypeDAO {
             stmt.setDouble(2, tt.getPrice());
             stmt.setInt(3, tt.getQuantity());
             stmt.setString(4, tt.getNote());
-            stmt.setInt(5, tt.getId());
+            stmt.setInt(5, tt.getTicketsLeft());
+            stmt.setInt(6, tt.getId());
 
             stmt.executeUpdate();
         }
@@ -76,17 +77,21 @@ public class TicketTypeDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                list.add(new TicketType(
+                TicketType tt = new TicketType(
                         rs.getInt("Id"),
                         rs.getInt("EventId"),
                         rs.getString("Name"),
                         rs.getDouble("Price"),
                         rs.getInt("Quantity"),
                         rs.getString("Note")
-                ));
-            }
-        }
+                );
 
-        return list;
+                tt.setTicketsLeft(rs.getInt("ticketsLeft"));
+
+                list.add(tt);
+            }
+
+            return list;
+        }
     }
 }
