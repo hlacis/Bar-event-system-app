@@ -6,26 +6,30 @@ import dk.easv.be.TicketType;
 import dk.easv.be.Voucher;
 import dk.easv.bll.TicketManager;
 import dk.easv.bll.TicketPDFGenerator;
-import java.util.List;
-import java.util.ArrayList;
 import dk.easv.bll.TicketTypeManager;
 import dk.easv.bll.VoucherManager;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Node;
-import javafx.scene.control.*;
-import javafx.scene.layout.StackPane;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.cell.PropertyValueFactory;
-
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Alert;
-import java.time.format.DateTimeFormatter;
-import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
-import java.util.Optional;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class EventDetailsController {
 
@@ -43,11 +47,12 @@ public class EventDetailsController {
     @FXML private TableColumn<TicketType, String> colName;
     @FXML private TableColumn<TicketType, Double> colPrice;
     @FXML private TableColumn<TicketType, Integer> colQuantity;
+    @FXML private TableColumn<TicketType, Integer> colLeft;
     @FXML private TableColumn<TicketType, String> colNote;
 
-    // ===== VOUCHER UI =====
     @FXML private TextField txtVoucherName;
     @FXML private TextField txtVoucherValue;
+    @FXML private TextField txtVoucherType;
 
     @FXML private TableView<Voucher> voucherTable;
     @FXML private TableColumn<Voucher, String> colVoucherName;
@@ -55,41 +60,27 @@ public class EventDetailsController {
     @FXML private TableColumn<Voucher, Double> colVoucherValue;
 
     private Event event;
-    private TicketTypeManager ticketTypeManager = new TicketTypeManager();
 
-    private VoucherManager voucherManager = new VoucherManager();
-    private ObservableList<Voucher> voucherList = FXCollections.observableArrayList();
-    private ObservableList<TicketType> ticketList = FXCollections.observableArrayList();
+    private final TicketTypeManager ticketTypeManager = new TicketTypeManager();
+    private final VoucherManager voucherManager = new VoucherManager();
+
+    private final ObservableList<Voucher> voucherList = FXCollections.observableArrayList();
+    private final ObservableList<TicketType> ticketList = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
         colQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        colLeft.setCellValueFactory(new PropertyValueFactory<>("ticketsLeft"));
         colNote.setCellValueFactory(new PropertyValueFactory<>("note"));
 
         colVoucherName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colVoucherType.setCellValueFactory(new PropertyValueFactory<>("type"));
         colVoucherValue.setCellValueFactory(new PropertyValueFactory<>("value"));
 
-        voucherTable.setItems(voucherList);
-
-        //Table spacing
-        colName.setPrefWidth(160);
-        colPrice.setPrefWidth(90);
-        colQuantity.setPrefWidth(90);
-        colNote.setPrefWidth(300);
-
-        // Optional size caps
-        colName.setMaxWidth(180);
-        colPrice.setMaxWidth(150);
-        colQuantity.setMaxWidth(120);
-        colNote.setMaxWidth(350);
-
-        //Table setup
         ticketTable.setItems(ticketList);
-        ticketTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
+        voucherTable.setItems(voucherList);
 
         ticketTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, selected) -> {
             if (selected != null) {
@@ -97,15 +88,22 @@ public class EventDetailsController {
                 txtPrice.setText(String.valueOf(selected.getPrice()));
                 txtQuantity.setText(String.valueOf(selected.getQuantity()));
                 txtNote.setText(selected.getNote());
+            } else {
+                txtTicketName.clear();
+                txtPrice.clear();
+                txtQuantity.clear();
+                txtNote.clear();
             }
         });
 
         voucherTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, selected) -> {
             if (selected != null) {
                 txtVoucherName.setText(selected.getName());
+                txtVoucherType.setText(selected.getType());
                 txtVoucherValue.setText(String.valueOf(selected.getValue()));
-            }else  {
+            } else {
                 txtVoucherName.clear();
+                txtVoucherType.clear();
                 txtVoucherValue.clear();
             }
         });
@@ -119,7 +117,6 @@ public class EventDetailsController {
         locationLabel.setText("Location: " + event.getLocation());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
         if (event.getStartTime() != null) {
             String start = event.getStartTime().format(formatter);
             String end = event.getEndTime() != null ? event.getEndTime().format(formatter) : "";
@@ -153,17 +150,19 @@ public class EventDetailsController {
             e.printStackTrace();
         }
     }
-    //Ticket Type Methods
 
     @FXML
     private void handleAddTicketType() {
         try {
+            int quantity = Integer.parseInt(txtQuantity.getText().trim());
+
             TicketType tt = new TicketType(
                     event.getId(),
-                    txtTicketName.getText(),
-                    Double.parseDouble(txtPrice.getText()),
-                    Integer.parseInt(txtQuantity.getText()),
-                    txtNote.getText()
+                    txtTicketName.getText().trim(),
+                    Double.parseDouble(txtPrice.getText().trim()),
+                    quantity,
+                    quantity,
+                    txtNote.getText().trim()
             );
 
             ticketTypeManager.createTicketType(tt);
@@ -176,14 +175,12 @@ public class EventDetailsController {
 
         } catch (Exception e) {
             e.printStackTrace();
+            showError("Could not add ticket type");
         }
     }
 
     @FXML
     private void handleEditTicketType() {
-        System.out.println("EDIT CLICKED");
-
-
         try {
             TicketType selected = ticketTable.getSelectionModel().getSelectedItem();
 
@@ -192,37 +189,33 @@ public class EventDetailsController {
                 return;
             }
 
-            // Get updated values from text fields
-            String name = txtTicketName.getText();
-            double price = Double.parseDouble(txtPrice.getText());
-            int quantity = Integer.parseInt(txtQuantity.getText());
-            String note = txtNote.getText();
+            String name = txtTicketName.getText().trim();
+            double price = Double.parseDouble(txtPrice.getText().trim());
+            int quantity = Integer.parseInt(txtQuantity.getText().trim());
+            String note = txtNote.getText().trim();
 
-            // Update the selected object
+            int sold = selected.getQuantity() - selected.getTicketsLeft();
+            int newLeft = Math.max(0, quantity - sold);
+
             selected.setName(name);
             selected.setPrice(price);
             selected.setQuantity(quantity);
+            selected.setTicketsLeft(newLeft);
             selected.setNote(note);
 
-            // Send update to database
             ticketTypeManager.updateTicketType(selected);
-
-            // Refresh table
             loadTicketTypes();
+
+            txtTicketName.clear();
+            txtPrice.clear();
+            txtQuantity.clear();
+            txtNote.clear();
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Success");
             alert.setHeaderText(null);
             alert.setContentText("Ticket updated successfully!");
             alert.showAndWait();
-
-            // Clear input fields
-            txtTicketName.clear();
-            txtPrice.clear();
-            txtQuantity.clear();
-            txtNote.clear();
-
-            System.out.println("Ticket updated!");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -239,7 +232,6 @@ public class EventDetailsController {
                 return;
             }
 
-            // Confirmation popup
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Confirm Delete");
             alert.setHeaderText(null);
@@ -248,14 +240,8 @@ public class EventDetailsController {
             Optional<ButtonType> result = alert.showAndWait();
 
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                // User clicked OK → delete
                 ticketTypeManager.deleteTicketType(selected.getId());
                 loadTicketTypes();
-
-                System.out.println("Ticket deleted");
-            } else {
-                // User cancelled
-                System.out.println("Delete cancelled");
             }
 
         } catch (Exception e) {
@@ -263,15 +249,12 @@ public class EventDetailsController {
         }
     }
 
-    //Voucher Methods
     @FXML
     private void handleAddVoucher() {
         try {
-            String name = txtVoucherName.getText();
-            double value = Double.parseDouble(txtVoucherValue.getText());
-
-            // Temporary type (you can improve later)
-            String type = "DISCOUNT";
+            String name = txtVoucherName.getText().trim();
+            String type = txtVoucherType.getText().trim();
+            double value = Double.parseDouble(txtVoucherValue.getText().trim());
 
             Voucher voucher = new Voucher(
                     event.getId(),
@@ -281,10 +264,10 @@ public class EventDetailsController {
             );
 
             voucherManager.createVoucher(voucher);
-
             loadVouchers();
 
             txtVoucherName.clear();
+            txtVoucherType.clear();
             txtVoucherValue.clear();
 
             showInfo("Success", "Voucher created!");
@@ -305,17 +288,19 @@ public class EventDetailsController {
                 return;
             }
 
-            String name = txtVoucherName.getText();
-            double value = Double.parseDouble(txtVoucherValue.getText());
+            String name = txtVoucherName.getText().trim();
+            String type = txtVoucherType.getText().trim();
+            double value = Double.parseDouble(txtVoucherValue.getText().trim());
 
             selected.setName(name);
+            selected.setType(type);
             selected.setValue(value);
 
             voucherManager.updateVoucher(selected);
-
             loadVouchers();
 
             txtVoucherName.clear();
+            txtVoucherType.clear();
             txtVoucherValue.clear();
 
             showInfo("Success", "Voucher updated!");
@@ -354,10 +339,8 @@ public class EventDetailsController {
         }
     }
 
-
     @FXML
     private void handlePrintTickets() {
-
         TicketType selected = ticketTable.getSelectionModel().getSelectedItem();
 
         if (selected == null) {
@@ -365,11 +348,9 @@ public class EventDetailsController {
             return;
         }
 
-        // Create dialog
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Creating Ticket");
 
-        // Input fields
         TextField nameField = new TextField();
         nameField.setPromptText("Name");
 
@@ -379,7 +360,6 @@ public class EventDetailsController {
         TextField amountField = new TextField();
         amountField.setPromptText("Amount");
 
-        // Layout
         VBox content = new VBox(10,
                 new Label("Enter customer info"),
                 nameField,
@@ -390,55 +370,40 @@ public class EventDetailsController {
 
         dialog.getDialogPane().setContent(content);
 
-        // Buttons
         ButtonType createButton = new ButtonType("Create", ButtonBar.ButtonData.OK_DONE);
         ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 
         dialog.getDialogPane().getButtonTypes().addAll(createButton, cancelButton);
 
-        // Disable create button if fields empty
         Node createBtn = dialog.getDialogPane().lookupButton(createButton);
         createBtn.setDisable(true);
 
-        amountField.textProperty().addListener((obs, oldVal, newVal) -> {
-            validateForm(nameField, emailField, amountField, selected, createBtn);
-        });
+        amountField.textProperty().addListener((obs, oldVal, newVal) ->
+                validateForm(nameField, emailField, amountField, selected, createBtn));
 
-        nameField.textProperty().addListener((obs, oldVal, newVal) -> {
-            validateForm(nameField, emailField, amountField, selected, createBtn);
-        });
+        nameField.textProperty().addListener((obs, oldVal, newVal) ->
+                validateForm(nameField, emailField, amountField, selected, createBtn));
 
-        emailField.textProperty().addListener((obs, oldVal, newVal) -> {
-            validateForm(nameField, emailField, amountField, selected, createBtn);
-        });
+        emailField.textProperty().addListener((obs, oldVal, newVal) ->
+                validateForm(nameField, emailField, amountField, selected, createBtn));
 
-        // Show dialog
         Optional<ButtonType> result = dialog.showAndWait();
 
         if (result.isPresent() && result.get() == createButton) {
-
             try {
-                String name = nameField.getText();
-                String email = emailField.getText();
-
-                int amount;
-
-                try {
-                    amount = Integer.parseInt(amountField.getText());
-                } catch (Exception e) {
-                    showError("Enter a valid number");
-                    return;
-                }
+                String name = nameField.getText().trim();
+                String email = emailField.getText().trim();
+                int amount = Integer.parseInt(amountField.getText().trim());
 
                 if (amount <= 0) {
                     showError("Amount must be at least 1");
                     return;
                 }
+
                 if (amount > selected.getTicketsLeft()) {
                     showError("Not enough tickets available");
                     return;
                 }
-
 
                 TicketManager manager = new TicketManager();
                 List<Ticket> tickets = new ArrayList<>();
@@ -452,24 +417,21 @@ public class EventDetailsController {
                     );
                     tickets.add(t);
                 }
-                selected.setTicketsLeft(selected.getTicketsLeft() - amount);
 
-                TicketTypeManager ticketTypeManager = new TicketTypeManager();
+                selected.setTicketsLeft(selected.getTicketsLeft() - amount);
                 ticketTypeManager.updateTicketType(selected);
 
                 TicketPDFGenerator generator = new TicketPDFGenerator();
                 String eventName = event.getName();
                 String location = event.getLocation();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm");
 
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm");
                 String start = event.getStartTime().format(formatter);
                 String end = event.getEndTime().format(formatter);
-
                 String time = start + " - " + end;
 
                 generator.generatePDF(tickets, eventName, location, time);
-
-                //showInfo("Success", "Ticket created");
+                loadTicketTypes();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -477,9 +439,9 @@ public class EventDetailsController {
             }
         }
     }
+
     private void validateForm(TextField nameField, TextField emailField,
                               TextField amountField, TicketType selected, Node createBtn) {
-
         try {
             int amount = Integer.parseInt(amountField.getText());
 
@@ -504,7 +466,6 @@ public class EventDetailsController {
             );
 
             Parent view = loader.load();
-
             EventCreatorController controller = loader.getController();
             controller.setEvent(event);
 

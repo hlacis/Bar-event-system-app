@@ -7,6 +7,7 @@ public class Users {
     private String username;
     private String password;
     private String role;
+    private int ticketsLeft;
 
     public Users(int id, String name, String email, String username, String password, String role) {
         this.id = id;

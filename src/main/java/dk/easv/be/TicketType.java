@@ -8,24 +8,23 @@ public class TicketType {
     private String name;
     private double price;
     private int quantity;
-    private String note;
     private int ticketsLeft;
-
+    private String note;
     //Constructors 2
 
-    public TicketType(int id, int eventId, String name, double price, int quantity, String note) {
+    public TicketType(int id, int eventId, String name, double price, int quantity, int ticketsLeft, String note) {
         this.id = id;
         this.eventId = eventId;
         this.name = name;
         this.price = price;
         this.quantity = quantity;
+        this.ticketsLeft = ticketsLeft;
         this.note = note;
     }
 
 
-
-    public TicketType(int eventId, String name, double price, int quantity, String note) {
-        this(0, eventId, name, price, quantity, note);
+    public TicketType(int eventId, String name, double price, int quantity, int ticketsLeft, String note) {
+        this(0, eventId, name, price, quantity, ticketsLeft, note);
     }
 
     // Getters & setters
@@ -85,5 +84,7 @@ public class TicketType {
     public void setTicketsLeft(int ticketsLeft) {
         this.ticketsLeft = ticketsLeft;
     }
+
+
 }
 
