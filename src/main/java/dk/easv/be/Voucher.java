@@ -5,34 +5,68 @@ public class Voucher {
     private int id;
     private int eventId;
     private String name;
-    private String type;   // FREE, DISCOUNT, EXTRA
-    private double value;
+    private int total;
+    private int vouchersLeft;
+    private String note;
 
-    public Voucher(int id, int eventId, String name, String type, double value) {
+    public Voucher(int id, int eventId, String name, int total, int vouchersLeft, String note) {
         this.id = id;
         this.eventId = eventId;
         this.name = name;
-        this.type = type;
-        this.value = value;
+        this.total = total;
+        this.vouchersLeft = vouchersLeft;
+        this.note = note;
     }
 
-    public Voucher(int eventId, String name, String type, double value) {
-        this(0, eventId, name, type, value);
+    public Voucher(int eventId, String name, int total, int vouchersLeft, String note) {
+        this(0, eventId, name, total, vouchersLeft, note);
     }
 
-    // Getters & Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
 
-    public int getEventId() { return eventId; }
-    public void setEventId(int eventId) { this.eventId = eventId; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public int getEventId() {
+        return eventId;
+    }
 
-    public String getType() { return type; }
-    public void setType(String type) { this.type = type; }
+    public void setEventId(int eventId) {
+        this.eventId = eventId;
+    }
 
-    public double getValue() { return value; }
-    public void setValue(double value) { this.value = value; }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+    public int getVouchersLeft() {
+        return vouchersLeft;
+    }
+
+    public void setVouchersLeft(int vouchersLeft) {
+        this.vouchersLeft = vouchersLeft;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
 }

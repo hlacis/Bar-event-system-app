@@ -52,13 +52,15 @@ public class EventDetailsController {
     @FXML private TableColumn<TicketType, String> colNote;
 
     @FXML private TextField txtVoucherName;
-    @FXML private TextField txtVoucherValue;
-    @FXML private TextField txtVoucherType;
+    @FXML private TextField txtVoucherQuantity;
+    @FXML private TextField txtVoucherLeft;
+    @FXML private TextField txtVoucherNote;
 
     @FXML private TableView<Voucher> voucherTable;
     @FXML private TableColumn<Voucher, String> colVoucherName;
-    @FXML private TableColumn<Voucher, String> colVoucherType;
-    @FXML private TableColumn<Voucher, Double> colVoucherValue;
+    @FXML private TableColumn<Voucher, Integer> colVoucherQuantity;
+    @FXML private TableColumn<Voucher, Integer> colVoucherLeft;
+    @FXML private TableColumn<Voucher, String> colVoucherNote;
 
     private Event event;
 
@@ -78,8 +80,9 @@ public class EventDetailsController {
         colNote.setCellValueFactory(new PropertyValueFactory<>("note"));
 
         colVoucherName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colVoucherType.setCellValueFactory(new PropertyValueFactory<>("type"));
-        colVoucherValue.setCellValueFactory(new PropertyValueFactory<>("value"));
+        colVoucherQuantity.setCellValueFactory(new PropertyValueFactory<>("total"));
+        colVoucherLeft.setCellValueFactory(new PropertyValueFactory<>("vouchersLeft"));
+        colVoucherNote.setCellValueFactory(new PropertyValueFactory<>("note"));
 
         ticketTable.setItems(ticketList);
         voucherTable.setItems(voucherList);
@@ -101,12 +104,14 @@ public class EventDetailsController {
         voucherTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, selected) -> {
             if (selected != null) {
                 txtVoucherName.setText(selected.getName());
-                txtVoucherType.setText(selected.getType());
-                txtVoucherValue.setText(String.valueOf(selected.getValue()));
+                txtVoucherQuantity.setText(String.valueOf(selected.getTotal()));
+                txtVoucherLeft.setText(String.valueOf(selected.getVouchersLeft()));
+                txtVoucherNote.setText(selected.getNote());
             } else {
                 txtVoucherName.clear();
-                txtVoucherType.clear();
-                txtVoucherValue.clear();
+                txtVoucherQuantity.clear();
+                txtVoucherLeft.clear();
+                txtVoucherNote.clear();
             }
         });
     }
@@ -255,22 +260,24 @@ public class EventDetailsController {
     private void handleAddVoucher() {
         try {
             String name = txtVoucherName.getText().trim();
-            String type = txtVoucherType.getText().trim();
-            double value = Double.parseDouble(txtVoucherValue.getText().trim());
+            int quantity = Integer.parseInt(txtVoucherQuantity.getText().trim());
+            String note = txtVoucherNote.getText().trim();
 
             Voucher voucher = new Voucher(
                     event.getId(),
                     name,
-                    type,
-                    value
+                    quantity,
+                    quantity,
+                    note
             );
 
             voucherManager.createVoucher(voucher);
             loadVouchers();
 
             txtVoucherName.clear();
-            txtVoucherType.clear();
-            txtVoucherValue.clear();
+            txtVoucherQuantity.clear();
+            txtVoucherLeft.clear();
+            txtVoucherNote.clear();
 
             showInfo("Success", "Voucher created!");
 
@@ -291,19 +298,24 @@ public class EventDetailsController {
             }
 
             String name = txtVoucherName.getText().trim();
-            String type = txtVoucherType.getText().trim();
-            double value = Double.parseDouble(txtVoucherValue.getText().trim());
+            int quantity = Integer.parseInt(txtVoucherQuantity.getText().trim());
+            String note = txtVoucherNote.getText().trim();
+
+            int used = selected.getTotal() - selected.getVouchersLeft();
+            int newLeft = Math.max(0, quantity - used);
 
             selected.setName(name);
-            selected.setType(type);
-            selected.setValue(value);
+            selected.setTotal(quantity);
+            selected.setVouchersLeft(newLeft);
+            selected.setNote(note);
 
             voucherManager.updateVoucher(selected);
             loadVouchers();
 
             txtVoucherName.clear();
-            txtVoucherType.clear();
-            txtVoucherValue.clear();
+            txtVoucherQuantity.clear();
+            txtVoucherLeft.clear();
+            txtVoucherNote.clear();
 
             showInfo("Success", "Voucher updated!");
 

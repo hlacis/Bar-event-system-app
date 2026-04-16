@@ -113,58 +113,38 @@
                 <HBox alignment="CENTER_LEFT" spacing="12">
                     <TextField fx:id="txtVoucherName"
                                promptText="Name"
-                               prefWidth="170"
-                               minWidth="170"
-                               maxWidth="170" />
+                               prefWidth="170" minWidth="170" maxWidth="170" />
 
-                    <TextField fx:id="txtVoucherType"
-                               promptText="Type"
-                               prefWidth="120"
-                               minWidth="120"
-                               maxWidth="120" />
+                    <TextField fx:id="txtVoucherQuantity"
+                               promptText="Quantity"
+                               prefWidth="120" minWidth="120" maxWidth="120" />
 
-                    <TextField fx:id="txtVoucherValue"
-                               promptText="Value"
-                               prefWidth="120"
-                               minWidth="120"
-                               maxWidth="120" />
-
-                    <TextField promptText="Optional note"
-                               disable="true"
-                               prefWidth="190"
-                               minWidth="190"
-                               maxWidth="190" />
+                    <TextField fx:id="txtVoucherNote"
+                               promptText="Note"
+                               prefWidth="190" minWidth="190" maxWidth="190" />
 
                     <Button text="Add"
                             onAction="#handleAddVoucher"
                             styleClass="primary-button"
-                            prefWidth="70"
-                            minWidth="70"
-                            maxWidth="70" />
+                            prefWidth="70" minWidth="70" maxWidth="70" />
 
                     <Button text="Edit"
                             onAction="#handleEditVoucher"
                             styleClass="secondary-button"
-                            prefWidth="70"
-                            minWidth="70"
-                            maxWidth="70" />
+                            prefWidth="70" minWidth="70" maxWidth="70" />
 
                     <Button text="Delete"
                             onAction="#handleDeleteVoucher"
                             styleClass="secondary-button"
-                            prefWidth="75"
-                            minWidth="75"
-                            maxWidth="75" />
+                            prefWidth="75" minWidth="75" maxWidth="75" />
                 </HBox>
 
-                <TableView fx:id="voucherTable"
-                           prefHeight="180"
-                           minHeight="180"
-                           maxHeight="180">
+                <TableView fx:id="voucherTable" prefHeight="180" minHeight="180" maxHeight="180">
                     <columns>
-                        <TableColumn fx:id="colVoucherName" text="Name" prefWidth="220" />
-                        <TableColumn fx:id="colVoucherType" text="Type" prefWidth="220" />
-                        <TableColumn fx:id="colVoucherValue" text="Value" prefWidth="220" />
+                        <TableColumn fx:id="colVoucherName" text="Name" prefWidth="180" />
+                        <TableColumn fx:id="colVoucherQuantity" text="Quantity" prefWidth="120" />
+                        <TableColumn fx:id="colVoucherLeft" text="Left" prefWidth="120" />
+                        <TableColumn fx:id="colVoucherNote" text="Note" prefWidth="584" />
                     </columns>
                 </TableView>
             </VBox>
