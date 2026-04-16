@@ -141,7 +141,7 @@
                     <Button text="Print Vouchers"
                             fx:id="printButton"
                             onAction="#handlePrintVouchers"
-                            styleClass="button primary-button"/>
+                            styleClass="print-button"/>
 
                 </HBox>
 

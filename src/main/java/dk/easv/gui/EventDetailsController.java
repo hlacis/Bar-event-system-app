@@ -1,13 +1,7 @@
 package dk.easv.gui;
 
-import dk.easv.be.Event;
-import dk.easv.be.Ticket;
-import dk.easv.be.TicketType;
-import dk.easv.be.Voucher;
-import dk.easv.bll.TicketManager;
-import dk.easv.bll.TicketPDFGenerator;
-import dk.easv.bll.TicketTypeManager;
-import dk.easv.bll.VoucherManager;
+import dk.easv.be.*;
+import dk.easv.bll.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -26,34 +20,57 @@ import java.util.Optional;
 
 public class EventDetailsController {
 
-    @FXML private Label nameLabel;
-    @FXML private Label locationLabel;
-    @FXML private Label timeLabel;
-    @FXML private Label notesLabel;
+    @FXML
+    private Label nameLabel;
+    @FXML
+    private Label locationLabel;
+    @FXML
+    private Label timeLabel;
+    @FXML
+    private Label notesLabel;
 
-    @FXML private TextField txtTicketName;
-    @FXML private TextField txtPrice;
-    @FXML private TextField txtQuantity;
-    @FXML private TextField txtNote;
+    @FXML
+    private TextField txtTicketName;
+    @FXML
+    private TextField txtPrice;
+    @FXML
+    private TextField txtQuantity;
+    @FXML
+    private TextField txtNote;
 
-    @FXML private TableView<TicketType> ticketTable;
-    @FXML private TableColumn<TicketType, String> colName;
-    @FXML private TableColumn<TicketType, Double> colPrice;
-    @FXML private TableColumn<TicketType, Integer> colQuantity;
-    @FXML private TableColumn<TicketType, Integer> colLeft;
-    @FXML private TableColumn<TicketType, String> colNote;
+    @FXML
+    private TableView<TicketType> ticketTable;
+    @FXML
+    private TableColumn<TicketType, String> colName;
+    @FXML
+    private TableColumn<TicketType, Double> colPrice;
+    @FXML
+    private TableColumn<TicketType, Integer> colQuantity;
+    @FXML
+    private TableColumn<TicketType, Integer> colLeft;
+    @FXML
+    private TableColumn<TicketType, String> colNote;
 
-    @FXML private TextField txtVoucherName;
-    @FXML private TextField txtVoucherQuantity;
-    @FXML private TextField txtVoucherLeft;
-    @FXML private TextField txtVoucherNote;
+    @FXML
+    private TextField txtVoucherName;
+    @FXML
+    private TextField txtVoucherQuantity;
 
-    @FXML private TableView<Voucher> voucherTable;
-    @FXML private TableColumn<Voucher, String> colVoucherName;
-    @FXML private TableColumn<Voucher, Integer> colVoucherQuantity;
-    @FXML private TableColumn<Voucher, Integer> colVoucherLeft;
-    @FXML private TableColumn<Voucher, String> colVoucherNote;
-    @FXML private Button printButton;
+    @FXML
+    private TextField txtVoucherNote;
+
+    @FXML
+    private TableView<Voucher> voucherTable;
+    @FXML
+    private TableColumn<Voucher, String> colVoucherName;
+    @FXML
+    private TableColumn<Voucher, Integer> colVoucherQuantity;
+    @FXML
+    private TableColumn<Voucher, Integer> colVoucherLeft;
+    @FXML
+    private TableColumn<Voucher, String> colVoucherNote;
+    @FXML
+    private Button printButton;
 
     private Event event;
 
@@ -98,12 +115,10 @@ public class EventDetailsController {
             if (selected != null) {
                 txtVoucherName.setText(selected.getName());
                 txtVoucherQuantity.setText(String.valueOf(selected.getTotal()));
-                txtVoucherLeft.setText(String.valueOf(selected.getVouchersLeft()));
                 txtVoucherNote.setText(selected.getNote());
             } else {
                 txtVoucherName.clear();
                 txtVoucherQuantity.clear();
-                txtVoucherLeft.clear();
                 txtVoucherNote.clear();
             }
         });
@@ -269,7 +284,6 @@ public class EventDetailsController {
 
             txtVoucherName.clear();
             txtVoucherQuantity.clear();
-            txtVoucherLeft.clear();
             txtVoucherNote.clear();
 
             showInfo("Success", "Voucher created!");
@@ -307,7 +321,6 @@ public class EventDetailsController {
 
             txtVoucherName.clear();
             txtVoucherQuantity.clear();
-            txtVoucherLeft.clear();
             txtVoucherNote.clear();
 
             showInfo("Success", "Voucher updated!");
@@ -493,7 +506,6 @@ public class EventDetailsController {
             return;
         }
 
-        // Create dialog
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Creating Voucher");
 
@@ -528,7 +540,6 @@ public class EventDetailsController {
 
         Node createBtn = dialog.getDialogPane().lookupButton(createButton);
         createBtn.setDisable(true);
-        printButton.getStyleClass().add("print-button");
 
         amountField.textProperty().addListener((obs, oldVal, newVal) -> {
             try {
@@ -538,7 +549,7 @@ public class EventDetailsController {
                         amount <= 0 ||
                                 nameField.getText().isBlank() ||
                                 emailField.getText().isBlank() ||
-                                amount > selected.getTotal();
+                                amount > selected.getVouchersLeft();
 
                 createBtn.setDisable(invalid);
 
@@ -554,32 +565,32 @@ public class EventDetailsController {
                 String name = nameField.getText();
                 String email = emailField.getText();
                 int amount = Integer.parseInt(amountField.getText());
+
                 if (amount > selected.getVouchersLeft()) {
                     showError("Not enough vouchers available");
                     return;
                 }
 
-                VoucherManager manager = new VoucherManager();
-                List<Voucher> vouchers = new ArrayList<>();
+                PurchasedVoucherManager manager = new PurchasedVoucherManager();
+                List<PurchasedVoucher> vouchers = new ArrayList<>();
 
                 for (int i = 0; i < amount; i++) {
 
-                    Voucher v = new Voucher(
+                    PurchasedVoucher v = manager.createVoucher(
                             event.getId(),
+                            selected.getId(),
                             name,
-                            selected.getTotal(),
-                            selected.getVouchersLeft(),
-                            selected.getNote()
+                            email
                     );
 
-                    manager.createVoucher(v);
                     vouchers.add(v);
                 }
 
+                // update availability
                 selected.setVouchersLeft(selected.getVouchersLeft() - amount);
                 voucherManager.updateVoucher(selected);
 
-                // PDF generation
+                // PDF
                 TicketPDFGenerator generator = new TicketPDFGenerator();
 
                 String eventName = event.getName();
@@ -592,15 +603,12 @@ public class EventDetailsController {
 
                 generator.generateVoucherPDF(vouchers, eventName, location, time);
 
-                //showInfo("Success", amount + " vouchers created");
-
             } catch (Exception e) {
                 e.printStackTrace();
                 showError("Could not create vouchers");
             }
         }
     }
-
     @FXML
     private void handleEdit() {
         try {

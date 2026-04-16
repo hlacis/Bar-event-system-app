@@ -543,17 +543,6 @@
     -fx-background-color: #3b82f6;
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-background-radius: 8;
-}
-
-.print-button:hover {
-    -fx-background-color: #2563eb;
-    -fx-cursor: hand;
-}
-.print-button {
-    -fx-background-color: #3b82f6;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
 
     -fx-background-radius: 10;
     -fx-padding: 10 18;
