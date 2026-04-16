@@ -516,3 +516,11 @@
     -fx-text-fill: white;
     -fx-font-size: 13px;
 }
+.table-row-cell:hover {
+    -fx-background-color: #f2f2f2;
+}
+
+.button:hover {
+    -fx-background-color: #ff7a00;
+    -fx-text-fill: white;
+}
