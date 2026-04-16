@@ -166,7 +166,7 @@ public class TicketPDFGenerator {
             document.add(table);
 
             if (i < vouchers.size() - 1) {
-                document.add(new AreaBreak());
+                document.add(new Paragraph("\n"));
             }
         }
 

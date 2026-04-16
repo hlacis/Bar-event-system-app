@@ -602,6 +602,7 @@ public class EventDetailsController {
                 String time = start + " - " + end;
 
                 generator.generateVoucherPDF(vouchers, eventName, location, time);
+                loadVouchers();
 
             } catch (Exception e) {
                 e.printStackTrace();
