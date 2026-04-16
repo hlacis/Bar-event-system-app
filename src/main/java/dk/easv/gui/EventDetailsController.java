@@ -1,14 +1,34 @@
 package dk.easv.gui;
 
-import dk.easv.be.*;
-import dk.easv.bll.*;
+import dk.easv.be.CurrentUser;
+import dk.easv.be.Event;
+import dk.easv.be.PurchasedVoucher;
+import dk.easv.be.Ticket;
+import dk.easv.be.TicketType;
+import dk.easv.be.Users;
+import dk.easv.be.Voucher;
+import dk.easv.bll.EventManager;
+import dk.easv.bll.PurchasedVoucherManager;
+import dk.easv.bll.TicketManager;
+import dk.easv.bll.TicketPDFGenerator;
+import dk.easv.bll.TicketTypeManager;
+import dk.easv.bll.VoucherManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -20,61 +40,47 @@ import java.util.Optional;
 
 public class EventDetailsController {
 
-    @FXML
-    private Label nameLabel;
-    @FXML
-    private Label locationLabel;
-    @FXML
-    private Label timeLabel;
-    @FXML
-    private Label notesLabel;
+    @FXML private Label nameLabel;
+    @FXML private Label locationLabel;
+    @FXML private Label timeLabel;
+    @FXML private Label notesLabel;
 
-    @FXML
-    private TextField txtTicketName;
-    @FXML
-    private TextField txtPrice;
-    @FXML
-    private TextField txtQuantity;
-    @FXML
-    private TextField txtNote;
+    @FXML private TextField txtTicketName;
+    @FXML private TextField txtPrice;
+    @FXML private TextField txtQuantity;
+    @FXML private TextField txtNote;
 
-    @FXML
-    private TableView<TicketType> ticketTable;
-    @FXML
-    private TableColumn<TicketType, String> colName;
-    @FXML
-    private TableColumn<TicketType, Double> colPrice;
-    @FXML
-    private TableColumn<TicketType, Integer> colQuantity;
-    @FXML
-    private TableColumn<TicketType, Integer> colLeft;
-    @FXML
-    private TableColumn<TicketType, String> colNote;
+    @FXML private TableView<TicketType> ticketTable;
+    @FXML private TableColumn<TicketType, String> colName;
+    @FXML private TableColumn<TicketType, Double> colPrice;
+    @FXML private TableColumn<TicketType, Integer> colQuantity;
+    @FXML private TableColumn<TicketType, Integer> colLeft;
+    @FXML private TableColumn<TicketType, String> colNote;
 
-    @FXML
-    private TextField txtVoucherName;
-    @FXML
-    private TextField txtVoucherQuantity;
+    @FXML private TextField txtVoucherName;
+    @FXML private TextField txtVoucherQuantity;
+    @FXML private TextField txtVoucherNote;
 
-    @FXML
-    private TextField txtVoucherNote;
+    @FXML private TableView<Voucher> voucherTable;
+    @FXML private TableColumn<Voucher, String> colVoucherName;
+    @FXML private TableColumn<Voucher, Integer> colVoucherQuantity;
+    @FXML private TableColumn<Voucher, Integer> colVoucherLeft;
+    @FXML private TableColumn<Voucher, String> colVoucherNote;
 
-    @FXML
-    private TableView<Voucher> voucherTable;
-    @FXML
-    private TableColumn<Voucher, String> colVoucherName;
-    @FXML
-    private TableColumn<Voucher, Integer> colVoucherQuantity;
-    @FXML
-    private TableColumn<Voucher, Integer> colVoucherLeft;
-    @FXML
-    private TableColumn<Voucher, String> colVoucherNote;
-    @FXML
-    private Button printButton;
+    @FXML private Button printTicketsButton;
+    @FXML private Button editEventButton;
+    @FXML private Button addTicketButton;
+    @FXML private Button editTicketButton;
+    @FXML private Button deleteTicketButton;
+    @FXML private Button addVoucherButton;
+    @FXML private Button editVoucherButton;
+    @FXML private Button deleteVoucherButton;
+    @FXML private Button printVouchersButton;
 
     private Event event;
+    private boolean canManageEvent = false;
 
-
+    private final EventManager eventManager = new EventManager();
     private final TicketTypeManager ticketTypeManager = new TicketTypeManager();
     private final VoucherManager voucherManager = new VoucherManager();
 
@@ -128,6 +134,23 @@ public class EventDetailsController {
     public void setEvent(Event event) {
         this.event = event;
 
+        try {
+            if (CurrentUser.isAdmin()) {
+                canManageEvent = false;
+            } else if (CurrentUser.isCoordinator()) {
+                Users currentUser = CurrentUser.getUser();
+                canManageEvent = currentUser != null &&
+                        eventManager.isUserAssignedToEvent(currentUser.getId(), event.getId());
+            } else {
+                canManageEvent = false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            canManageEvent = false;
+        }
+
+        applyPermissions();
+
         nameLabel.setText(event.getName());
         locationLabel.setText("Location: " + event.getLocation());
 
@@ -168,6 +191,11 @@ public class EventDetailsController {
 
     @FXML
     private void handleAddTicketType() {
+        if (!canManageEvent) {
+            showError("You do not have permission to manage this event.");
+            return;
+        }
+
         try {
             int quantity = Integer.parseInt(txtQuantity.getText().trim());
 
@@ -196,6 +224,11 @@ public class EventDetailsController {
 
     @FXML
     private void handleEditTicketType() {
+        if (!canManageEvent) {
+            showError("You do not have permission to manage this event.");
+            return;
+        }
+
         try {
             TicketType selected = ticketTable.getSelectionModel().getSelectedItem();
 
@@ -226,19 +259,21 @@ public class EventDetailsController {
             txtQuantity.clear();
             txtNote.clear();
 
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Success");
-            alert.setHeaderText(null);
-            alert.setContentText("Ticket updated successfully!");
-            alert.showAndWait();
+            showInfo("Success", "Ticket updated successfully!");
 
         } catch (Exception e) {
             e.printStackTrace();
+            showError("Could not update ticket");
         }
     }
 
     @FXML
     private void handleDeleteTicketType() {
+        if (!canManageEvent) {
+            showError("You do not have permission to manage this event.");
+            return;
+        }
+
         try {
             TicketType selected = ticketTable.getSelectionModel().getSelectedItem();
 
@@ -261,11 +296,17 @@ public class EventDetailsController {
 
         } catch (Exception e) {
             e.printStackTrace();
+            showError("Could not delete ticket");
         }
     }
 
     @FXML
     private void handleAddVoucher() {
+        if (!canManageEvent) {
+            showError("You do not have permission to manage this event.");
+            return;
+        }
+
         try {
             String name = txtVoucherName.getText().trim();
             int quantity = Integer.parseInt(txtVoucherQuantity.getText().trim());
@@ -296,6 +337,11 @@ public class EventDetailsController {
 
     @FXML
     private void handleEditVoucher() {
+        if (!canManageEvent) {
+            showError("You do not have permission to manage this event.");
+            return;
+        }
+
         try {
             Voucher selected = voucherTable.getSelectionModel().getSelectedItem();
 
@@ -333,6 +379,11 @@ public class EventDetailsController {
 
     @FXML
     private void handleDeleteVoucher() {
+        if (!canManageEvent) {
+            showError("You do not have permission to manage this event.");
+            return;
+        }
+
         try {
             Voucher selected = voucherTable.getSelectionModel().getSelectedItem();
 
@@ -361,6 +412,11 @@ public class EventDetailsController {
 
     @FXML
     private void handlePrintTickets() {
+        if (!canManageEvent) {
+            showError("You do not have permission to manage this event.");
+            return;
+        }
+
         TicketType selected = ticketTable.getSelectionModel().getSelectedItem();
 
         if (selected == null) {
@@ -498,6 +554,10 @@ public class EventDetailsController {
 
     @FXML
     private void handlePrintVouchers() {
+        if (!canManageEvent) {
+            showError("You do not have permission to manage this event.");
+            return;
+        }
 
         Voucher selected = voucherTable.getSelectionModel().getSelectedItem();
 
@@ -575,22 +635,18 @@ public class EventDetailsController {
                 List<PurchasedVoucher> vouchers = new ArrayList<>();
 
                 for (int i = 0; i < amount; i++) {
-
                     PurchasedVoucher v = manager.createVoucher(
                             event.getId(),
                             selected.getId(),
                             name,
                             email
                     );
-
                     vouchers.add(v);
                 }
 
-                // update availability
                 selected.setVouchersLeft(selected.getVouchersLeft() - amount);
                 voucherManager.updateVoucher(selected);
 
-                // PDF
                 TicketPDFGenerator generator = new TicketPDFGenerator();
 
                 String eventName = event.getName();
@@ -610,8 +666,14 @@ public class EventDetailsController {
             }
         }
     }
+
     @FXML
     private void handleEdit() {
+        if (!canManageEvent) {
+            showError("You do not have permission to manage this event.");
+            return;
+        }
+
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/dk/easv/gui/EventsCreator.fxml")
@@ -676,5 +738,27 @@ public class EventDetailsController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void applyPermissions() {
+        if (editEventButton != null) editEventButton.setDisable(!canManageEvent);
+        if (printTicketsButton != null) printTicketsButton.setDisable(!canManageEvent);
+        if (addTicketButton != null) addTicketButton.setDisable(!canManageEvent);
+        if (editTicketButton != null) editTicketButton.setDisable(!canManageEvent);
+        if (deleteTicketButton != null) deleteTicketButton.setDisable(!canManageEvent);
+
+        if (txtTicketName != null) txtTicketName.setDisable(!canManageEvent);
+        if (txtPrice != null) txtPrice.setDisable(!canManageEvent);
+        if (txtQuantity != null) txtQuantity.setDisable(!canManageEvent);
+        if (txtNote != null) txtNote.setDisable(!canManageEvent);
+
+        if (addVoucherButton != null) addVoucherButton.setDisable(!canManageEvent);
+        if (editVoucherButton != null) editVoucherButton.setDisable(!canManageEvent);
+        if (deleteVoucherButton != null) deleteVoucherButton.setDisable(!canManageEvent);
+        if (printVouchersButton != null) printVouchersButton.setDisable(!canManageEvent);
+
+        if (txtVoucherName != null) txtVoucherName.setDisable(!canManageEvent);
+        if (txtVoucherQuantity != null) txtVoucherQuantity.setDisable(!canManageEvent);
+        if (txtVoucherNote != null) txtVoucherNote.setDisable(!canManageEvent);
     }
 }

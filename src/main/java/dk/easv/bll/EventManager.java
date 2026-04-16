@@ -94,5 +94,16 @@ public class EventManager {
 
         return usersDAO.createCoordinator(coordinator);
     }
+    public boolean isUserAssignedToEvent(int userId, int eventId) throws Exception {
+        return usersDAO.isUserAssignedToEvent(userId, eventId);
+    }
+
+    public void assignUserToEvent(int userId, int eventId) throws Exception {
+        usersDAO.assignUserToEvent(userId, eventId);
+    }
+
+    public List<Event> getEventsAssignedToUser(int userId) throws Exception {
+        return usersDAO.getEventsAssignedToUser(userId);
+    }
 
 }

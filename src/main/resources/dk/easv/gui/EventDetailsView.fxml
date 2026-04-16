@@ -25,7 +25,6 @@
               spacing="20"
               styleClass="page">
 
-            <!-- Back button -->
             <Button text="Back"
                     onAction="#handleBack"
                     styleClass="secondary-button"
@@ -33,7 +32,6 @@
                     minWidth="72"
                     maxWidth="72" />
 
-            <!-- Header -->
             <HBox alignment="CENTER_LEFT" spacing="16">
                 <Label fx:id="nameLabel"
                        styleClass="event-details-title"
@@ -41,15 +39,17 @@
                        minWidth="0.0"
                        HBox.hgrow="ALWAYS" />
 
-                <Button text="Print Tickets"
-                        onAction="#handlePrintTickets"
+                <Button fx:id="printTicketsButton"
+                        text="Print Tickets"
                         styleClass="secondary-button"
                         prefWidth="145"
                         minWidth="145"
                         maxWidth="145"
-                        prefHeight="46" />
+                        prefHeight="46"
+                        onAction="#handlePrintTickets" />
 
-                <Button text="Edit"
+                <Button fx:id="editEventButton"
+                        text="Edit"
                         onAction="#handleEdit"
                         styleClass="primary-button"
                         prefWidth="145"
@@ -58,19 +58,15 @@
                         prefHeight="46" />
             </HBox>
 
-            <!-- Event information -->
             <VBox spacing="12" styleClass="card">
                 <Label fx:id="timeLabel" styleClass="muted" />
                 <Label fx:id="locationLabel" styleClass="muted" />
-
                 <Label text="Information" styleClass="section-title" />
-
                 <Label fx:id="notesLabel"
                        wrapText="true"
                        styleClass="card-subtext" />
             </VBox>
 
-            <!-- Ticket Types -->
             <VBox maxWidth="1.7976931348623157E308"
                   minWidth="0.0"
                   spacing="12"
@@ -79,19 +75,59 @@
                 <Label text="Ticket Types" styleClass="section-title" />
 
                 <HBox alignment="CENTER_LEFT" spacing="12">
-                    <TextField fx:id="txtTicketName" maxWidth="170" minWidth="170" prefWidth="170" promptText="Name" />
-                    <TextField fx:id="txtPrice" maxWidth="120" minWidth="120" prefWidth="120" promptText="Price" />
-                    <TextField fx:id="txtQuantity" maxWidth="120" minWidth="120" prefWidth="120" promptText="Quantity" />
-                    <TextField fx:id="txtNote" maxWidth="190" minWidth="190" prefWidth="190" promptText="Note (e.g. Free drink)" />
+                    <TextField fx:id="txtTicketName"
+                               maxWidth="170"
+                               minWidth="170"
+                               prefWidth="170"
+                               promptText="Name" />
 
-                    <Button maxWidth="75" minWidth="75" onAction="#handleAddTicketType" prefWidth="75" styleClass="primary-button" text="Add" />
-                    <Button maxWidth="75" minWidth="75" onAction="#handleEditTicketType" prefWidth="75" styleClass="secondary-button" text="Edit" />
-                    <Button maxWidth="80" minWidth="80" onAction="#handleDeleteTicketType" prefWidth="80" styleClass="secondary-button" text="Delete" />
+                    <TextField fx:id="txtPrice"
+                               maxWidth="120"
+                               minWidth="120"
+                               prefWidth="120"
+                               promptText="Price" />
+
+                    <TextField fx:id="txtQuantity"
+                               maxWidth="120"
+                               minWidth="120"
+                               prefWidth="120"
+                               promptText="Quantity" />
+
+                    <TextField fx:id="txtNote"
+                               maxWidth="190"
+                               minWidth="190"
+                               prefWidth="190"
+                               promptText="Note (e.g. Free drink)" />
+
+                    <Button fx:id="addTicketButton"
+                            maxWidth="75"
+                            minWidth="75"
+                            prefWidth="75"
+                            onAction="#handleAddTicketType"
+                            styleClass="primary-button"
+                            text="Add" />
+
+                    <Button fx:id="editTicketButton"
+                            maxWidth="75"
+                            minWidth="75"
+                            prefWidth="75"
+                            onAction="#handleEditTicketType"
+                            styleClass="secondary-button"
+                            text="Edit" />
+
+                    <Button fx:id="deleteTicketButton"
+                            maxWidth="80"
+                            minWidth="80"
+                            prefWidth="80"
+                            onAction="#handleDeleteTicketType"
+                            styleClass="secondary-button"
+                            text="Delete" />
                 </HBox>
 
-
-
-                <TableView fx:id="ticketTable" maxHeight="180" minHeight="180" prefHeight="180">
+                <TableView fx:id="ticketTable"
+                           maxHeight="180"
+                           minHeight="180"
+                           prefHeight="180">
                     <columns>
                         <TableColumn fx:id="colName" text="Name" prefWidth="160" />
                         <TableColumn fx:id="colPrice" text="Price" prefWidth="100" />
@@ -102,7 +138,6 @@
                 </TableView>
             </VBox>
 
-            <!-- Vouchers -->
             <VBox maxWidth="1.7976931348623157E308"
                   minWidth="0.0"
                   spacing="12"
@@ -113,39 +148,56 @@
                 <HBox alignment="CENTER_LEFT" spacing="12">
                     <TextField fx:id="txtVoucherName"
                                promptText="Name"
-                               prefWidth="170" minWidth="170" maxWidth="170" />
+                               prefWidth="170"
+                               minWidth="170"
+                               maxWidth="170" />
 
                     <TextField fx:id="txtVoucherQuantity"
                                promptText="Quantity"
-                               prefWidth="120" minWidth="120" maxWidth="120" />
+                               prefWidth="120"
+                               minWidth="120"
+                               maxWidth="120" />
 
                     <TextField fx:id="txtVoucherNote"
                                promptText="Note"
-                               prefWidth="190" minWidth="190" maxWidth="190" />
+                               prefWidth="190"
+                               minWidth="190"
+                               maxWidth="190" />
 
-                    <Button text="Add"
+                    <Button fx:id="addVoucherButton"
+                            text="Add"
                             onAction="#handleAddVoucher"
                             styleClass="primary-button"
-                            prefWidth="70" minWidth="70" maxWidth="70" />
+                            prefWidth="70"
+                            minWidth="70"
+                            maxWidth="70" />
 
-                    <Button text="Edit"
+                    <Button fx:id="editVoucherButton"
+                            text="Edit"
                             onAction="#handleEditVoucher"
                             styleClass="secondary-button"
-                            prefWidth="70" minWidth="70" maxWidth="70" />
+                            prefWidth="70"
+                            minWidth="70"
+                            maxWidth="70" />
 
-                    <Button text="Delete"
+                    <Button fx:id="deleteVoucherButton"
+                            text="Delete"
                             onAction="#handleDeleteVoucher"
                             styleClass="secondary-button"
-                            prefWidth="75" minWidth="75" maxWidth="75" />
+                            prefWidth="75"
+                            minWidth="75"
+                            maxWidth="75" />
 
-                    <Button text="Print Vouchers"
-                            fx:id="printButton"
+                    <Button fx:id="printVouchersButton"
+                            text="Print Vouchers"
                             onAction="#handlePrintVouchers"
-                            styleClass="print-button"/>
-
+                            styleClass="print-button" />
                 </HBox>
 
-                <TableView fx:id="voucherTable" prefHeight="180" minHeight="180" maxHeight="180">
+                <TableView fx:id="voucherTable"
+                           prefHeight="180"
+                           minHeight="180"
+                           maxHeight="180">
                     <columns>
                         <TableColumn fx:id="colVoucherName" text="Name" prefWidth="180" />
                         <TableColumn fx:id="colVoucherQuantity" text="Quantity" prefWidth="120" />

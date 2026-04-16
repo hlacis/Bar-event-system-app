@@ -20,6 +20,8 @@ import javafx.scene.layout.VBox;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import dk.easv.be.CurrentUser;
+import dk.easv.be.Users;
 
 public class EventsController {
 
@@ -34,7 +36,13 @@ public class EventsController {
     private final List<EventCardViewData> allEvents = new ArrayList<>();
 
     @FXML
+    private Button createEventButton;
+
+    @FXML
     public void initialize() {
+        createEventButton.setVisible(CurrentUser.isCoordinator());
+        createEventButton.setManaged(CurrentUser.isCoordinator());
+
         loadEventsFromDatabaseAsync();
 
         searchField.textProperty().addListener((obs, oldVal, newVal) -> {
@@ -184,6 +192,25 @@ public class EventsController {
         Button deleteBtn = new Button("🗑");
         deleteBtn.getStyleClass().addAll("icon-button", "danger-button");
         deleteBtn.setOnMouseClicked(e -> e.consume());
+
+        boolean canDelete = false;
+
+        try {
+            Users currentUser = CurrentUser.getUser();
+
+            if (currentUser != null) {
+                if (CurrentUser.isAdmin()) {
+                    canDelete = true;
+                } else if (CurrentUser.isCoordinator()) {
+                    canDelete = eventManager.isUserAssignedToEvent(currentUser.getId(), event.getId());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        deleteBtn.setVisible(canDelete);
+        deleteBtn.setManaged(canDelete);
 
         HBox card = new HBox(12, left, spacer, deleteBtn);
         card.setAlignment(Pos.CENTER_LEFT);

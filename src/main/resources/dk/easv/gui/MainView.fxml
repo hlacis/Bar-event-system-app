@@ -18,35 +18,56 @@
 
     <!-- LEFT SIDEBAR (FULL HEIGHT) -->
     <left>
-        <VBox prefWidth="260" styleClass="sidebar">
+        <VBox prefWidth="260"
+              minWidth="260"
+              maxWidth="260"
+              styleClass="sidebar">
             <padding>
                 <Insets top="22" right="18" bottom="18" left="18"/>
             </padding>
 
             <Label text="EASV Tickets" styleClass="sidebar-title"/>
+
             <Region prefHeight="22"/>
+
             <VBox spacing="10" styleClass="sidebar-nav">
                 <fx:define>
                     <ToggleGroup fx:id="navGroup"/>
                 </fx:define>
 
-                <ToggleButton fx:id="usersBtn" text="E.C. Management" toggleGroup="$navGroup"
-                              onAction="#showUsers" styleClass="nav-button"/>
+                <ToggleButton fx:id="usersBtn"
+                              text="E.C. Management"
+                              toggleGroup="$navGroup"
+                              onAction="#showUsers"
+                              styleClass="nav-button"/>
 
-                <ToggleButton fx:id="assignBtn" text="E.C. Assigning" toggleGroup="$navGroup"
-                              onAction="#showAssign" styleClass="nav-button"/>
+                <ToggleButton fx:id="assignBtn"
+                              text="E.C. Assigning"
+                              toggleGroup="$navGroup"
+                              onAction="#showAssign"
+                              styleClass="nav-button"/>
 
-                <ToggleButton fx:id="eventsBtn" text="Events" toggleGroup="$navGroup"
-                              onAction="#showEvents" styleClass="nav-button"/>
-
-                <ToggleButton fx:id="settingsBtn" text="Settings" toggleGroup="$navGroup"
-                              onAction="#showSettings" styleClass="nav-button"/>
+                <ToggleButton fx:id="eventsBtn"
+                              text="Events"
+                              toggleGroup="$navGroup"
+                              onAction="#showEvents"
+                              styleClass="nav-button"/>
             </VBox>
 
             <Region VBox.vgrow="ALWAYS"/>
-            <VBox spacing="2">
-                <Label fx:id="userNameLabel" styleClass="sidebar-user-name"/>
-                <Label fx:id="userRoleLabel" styleClass="sidebar-user-role"/>
+
+            <VBox spacing="4"
+                  alignment="BOTTOM_LEFT"
+                  minHeight="72"
+                  prefHeight="72"
+                  style="-fx-padding: 0 0 8 0;">
+                <Label fx:id="userNameLabel"
+                       styleClass="sidebar-user-name"
+                       wrapText="false"/>
+
+                <Label fx:id="userRoleLabel"
+                       styleClass="sidebar-user-role"
+                       wrapText="false"/>
             </VBox>
         </VBox>
     </left>
@@ -61,7 +82,7 @@
                         <Insets top="14" right="18" bottom="14" left="28"/>
                     </padding>
 
-                    <Label text="EASV Tickets — Admin Panel" styleClass="topbar-title"/>
+                    <Label fx:id="panelTitleLabel" styleClass="topbar-title"/>
 
                     <Region HBox.hgrow="ALWAYS"
                             prefWidth="500"

@@ -15,7 +15,7 @@
       spacing="14"
       styleClass="page">
 
-    <Label text="Events (Read-only)" styleClass="page-title"/>
+    <Label text="Events" styleClass="page-title"/>
 
     <HBox spacing="12" alignment="CENTER_LEFT">
         <TextField fx:id="searchField"
@@ -25,7 +25,8 @@
 
         <Region HBox.hgrow="ALWAYS"/>
 
-        <Button text="Create new event"
+        <Button fx:id="createEventButton"
+                text="Create new event"
                 onAction="#createEvent"
                 styleClass="primary-button"/>
     </HBox>

@@ -15,6 +15,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import javafx.scene.control.ComboBox;
+import dk.easv.be.CurrentUser;
+import dk.easv.be.Users;
+import java.util.List;
 
 public class EventCreatorController {
 
@@ -102,6 +105,14 @@ public class EventCreatorController {
             if (eventToEdit == null) {
                 Event event = new Event(0, name, location, startTime, endTime, notes);
                 eventManager.createEvent(event);
+
+                if (CurrentUser.isCoordinator()) {
+                    Users currentUser = CurrentUser.getUser();
+                    if (currentUser != null) {
+                        eventManager.assignUserToEvent(currentUser.getId(), event.getId());
+                    }
+                }
+
                 showInfo("Success", "Event created successfully.");
             } else {
                 eventToEdit.setName(name);

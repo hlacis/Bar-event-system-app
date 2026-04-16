@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import dk.easv.be.CurrentUser;
 
 public class AssignCoordinatorController {
 
@@ -68,7 +69,14 @@ public class AssignCoordinatorController {
         Task<AssignDataBundle> loadTask = new Task<>() {
             @Override
             protected AssignDataBundle call() throws Exception {
-                List<Event> events = eventManager.getAllEvents();
+                List<Event> events;
+
+                if (CurrentUser.isAdmin()) {
+                    events = eventManager.getAllEvents();
+                } else {
+                    events = eventManager.getEventsAssignedToUser(CurrentUser.getUser().getId());
+                }
+
                 List<Users> coordinators = eventManager.getAllCoordinators();
                 return new AssignDataBundle(events, coordinators);
             }

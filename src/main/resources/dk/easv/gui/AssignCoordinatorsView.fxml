@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -7,30 +8,21 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<?import java.lang.String?>
 
-<HBox xmlns="http://javafx.com/javafx/25"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="dk.easv.gui.AssignCoordinatorController"
-      spacing="28"
-      styleClass="page">
+<HBox spacing="28" styleClass="page" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.gui.AssignCoordinatorController">
 
     <!-- LEFT COLUMN -->
     <VBox spacing="14" HBox.hgrow="ALWAYS">
 
-        <Label text="Assign Coordinators" styleClass="page-title"/>
-        <Label text="Events" styleClass="section-title"/>
+        <Label styleClass="page-title" text="Assign Coordinators" />
+        <Label styleClass="section-title" text="Events" />
 
-        <ScrollPane fitToWidth="true"
-                    hbarPolicy="NEVER"
-                    vbarPolicy="AS_NEEDED"
-                    styleClass="users-scroll"
-                    VBox.vgrow="ALWAYS">
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="users-scroll" VBox.vgrow="ALWAYS">
 
             <content>
                 <VBox fx:id="cardContainer" spacing="16" styleClass="users-list">
                     <padding>
-                        <Insets top="2" right="8" bottom="18" left="2"/>
+                        <Insets bottom="18" left="2" right="8" top="2" />
                     </padding>
                 </VBox>
             </content>
@@ -38,51 +30,47 @@
     </VBox>
 
     <!-- RIGHT COLUMN -->
-    <VBox spacing="14" prefWidth="380" minWidth="300" maxWidth="420">
+    <VBox maxWidth="420" minWidth="300" prefWidth="380" spacing="14">
         <styleClass>
-            <String fx:value="assign-form"/>
+            <String fx:value="assign-form" />
         </styleClass>
 
         <padding>
-            <Insets top="18" right="18" bottom="18" left="18"/>
+            <Insets bottom="18" left="18" right="18" top="18" />
         </padding>
 
-        <Label fx:id="rightTitleLabel" text="Select Coordinators" styleClass="section-title"/>
-        <Label fx:id="selectedEventLabel" text="Click an event on the left." styleClass="muted"/>
+        <Label fx:id="rightTitleLabel" styleClass="section-title" text="Select Coordinators" />
+        <Label fx:id="selectedEventLabel" styleClass="muted" text="Click an event on the left." />
 
         <VBox spacing="8">
-            <Label text="Available Coordinators" styleClass="form-label"/>
+            <Label styleClass="form-label" text="Available Coordinators" />
 
-            <ScrollPane fitToWidth="true"
-                        hbarPolicy="NEVER"
-                        vbarPolicy="AS_NEEDED"
-                        styleClass="users-scroll"
-                        prefHeight="420">
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="420" styleClass="users-scroll" vbarPolicy="AS_NEEDED">
 
                 <content>
                     <VBox fx:id="coordinatorCheckboxContainer" spacing="10" styleClass="form-box">
                         <padding>
-                            <Insets top="12" right="12" bottom="12" left="12"/>
+                            <Insets bottom="12" left="12" right="12" top="12" />
                         </padding>
                     </VBox>
                 </content>
             </ScrollPane>
         </VBox>
 
-        <Region VBox.vgrow="ALWAYS"/>
+        <Region VBox.vgrow="ALWAYS" />
 
         <HBox spacing="12">
-            <Button text="Save" onAction="#saveAssignments">
+            <Button onAction="#saveAssignments" text="Save">
                 <styleClass>
-                    <String fx:value="primary-button"/>
-                    <String fx:value="form-primary"/>
+                    <String fx:value="primary-button" />
+                    <String fx:value="form-primary" />
                 </styleClass>
             </Button>
 
-            <Button text="Cancel" onAction="#cancelSelection">
+            <Button onAction="#cancelSelection" text="Cancel">
                 <styleClass>
-                    <String fx:value="secondary-button"/>
-                    <String fx:value="form-secondary"/>
+                    <String fx:value="secondary-button" />
+                    <String fx:value="form-secondary" />
                 </styleClass>
             </Button>
         </HBox>

@@ -6,6 +6,8 @@ import dk.easv.dal.ConnectionManager;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import dk.easv.be.Event;
+import java.sql.Timestamp;
 
 public class UsersDAO {
 
@@ -212,5 +214,71 @@ public class UsersDAO {
         }
 
         return null;
+    }
+    public boolean isUserAssignedToEvent(int userId, int eventId) throws Exception {
+        String sql = "SELECT COUNT(*) AS Cnt FROM Event_User WHERE UserId = ? AND EventId = ?";
+
+        try (Connection conn = connectionManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, userId);
+            stmt.setInt(2, eventId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("Cnt") > 0;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public void assignUserToEvent(int userId, int eventId) throws Exception {
+        String sql = "INSERT INTO Event_User (EventId, UserId) VALUES (?, ?)";
+
+        try (Connection conn = connectionManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, eventId);
+            stmt.setInt(2, userId);
+            stmt.executeUpdate();
+        }
+    }
+
+    public List<Event> getEventsAssignedToUser(int userId) throws Exception {
+        List<Event> events = new ArrayList<>();
+
+        String sql = """
+        SELECT e.Id, e.Name, e.Location, e.StartTime, e.EndTime, e.Notes
+        FROM Event e
+        INNER JOIN Event_User eu ON e.Id = eu.EventId
+        WHERE eu.UserId = ?
+        ORDER BY e.StartTime
+        """;
+
+        try (Connection conn = connectionManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, userId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Timestamp startTs = rs.getTimestamp("StartTime");
+                    Timestamp endTs = rs.getTimestamp("EndTime");
+
+                    events.add(new Event(
+                            rs.getInt("Id"),
+                            rs.getString("Name"),
+                            rs.getString("Location"),
+                            startTs != null ? startTs.toLocalDateTime() : null,
+                            endTs != null ? endTs.toLocalDateTime() : null,
+                            rs.getString("Notes")
+                    ));
+                }
+            }
+        }
+
+        return events;
     }
 }

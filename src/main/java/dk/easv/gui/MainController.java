@@ -19,7 +19,6 @@ public class MainController {
     @FXML private ToggleButton usersBtn;
     @FXML private ToggleButton assignBtn;
     @FXML private ToggleButton eventsBtn;
-    @FXML private ToggleButton settingsBtn;
     @FXML
     private StackPane contentHost;
 
@@ -30,16 +29,44 @@ public class MainController {
     private Label userRoleLabel;
 
     @FXML
+    private Label panelTitleLabel;
+
+    @FXML
     public void initialize() {
         Users user = CurrentUser.getUser();
 
         if (user != null) {
             userNameLabel.setText(user.getName());
             userRoleLabel.setText("Role: " + user.getRole());
+            if (CurrentUser.isAdmin()) {
+                panelTitleLabel.setText("EASV Tickets — Admin Panel");
+            } else if (CurrentUser.isCoordinator()) {
+                panelTitleLabel.setText("EASV Tickets — E. Coordinator Panel");
+            } else {
+                panelTitleLabel.setText("EASV Tickets");
+            }
         }
 
-        usersBtn.setSelected(true);
-        loadIntoContent("/dk/easv/gui/CoordinatorManagement.fxml");
+        boolean isAdmin = CurrentUser.isAdmin();
+        boolean isCoordinator = CurrentUser.isCoordinator();
+
+        usersBtn.setVisible(isAdmin);
+        usersBtn.setManaged(isAdmin);
+
+        assignBtn.setVisible(isAdmin || isCoordinator);
+        assignBtn.setManaged(isAdmin || isCoordinator);
+
+        eventsBtn.setVisible(true);
+        eventsBtn.setManaged(true);
+
+        if (isAdmin) {
+            usersBtn.setSelected(true);
+            loadIntoContent("/dk/easv/gui/CoordinatorManagement.fxml");
+        } else {
+            eventsBtn.setSelected(true);
+            loadIntoContent("/dk/easv/gui/EventsView.fxml");
+        }
+
     }
 
 
@@ -58,11 +85,6 @@ public class MainController {
         loadIntoContent("/dk/easv/gui/EventsView.fxml");
     }
 
-    public void showSettings() {
-        settingsBtn.setSelected(true);
-        loadIntoContent("/dk/easv/gui/SettingsView.fxml");
-    }
-
 
     private void loadIntoContent(String fxmlPath) {
         try {
@@ -74,6 +96,8 @@ public class MainController {
     }
 
     public void logout(ActionEvent event) throws Exception {
+        CurrentUser.clear();
+
         Parent loginRoot = FXMLLoader.load(
                 getClass().getResource("/dk/easv/gui/LoginView.fxml")
         );
@@ -82,7 +106,7 @@ public class MainController {
         scene.setRoot(loginRoot);
 
         Stage stage = (Stage) scene.getWindow();
-        stage.sizeToScene();      // shrink to login layout
+        stage.sizeToScene();
         stage.centerOnScreen();
         stage.setResizable(false);
     }

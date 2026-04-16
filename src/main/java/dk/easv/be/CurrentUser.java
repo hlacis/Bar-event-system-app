@@ -3,8 +3,8 @@ package dk.easv.be;
 public class CurrentUser {
     private static Users user;
 
-    public static void setUser(Users loggedInUser) {
-        user = loggedInUser;
+    public static void setUser(Users user) {
+        CurrentUser.user = user;
     }
 
     public static Users getUser() {
@@ -13,6 +13,10 @@ public class CurrentUser {
 
     public static void clear() {
         user = null;
+    }
+
+    public static boolean isLoggedIn() {
+        return user != null;
     }
 
     public static boolean isAdmin() {
