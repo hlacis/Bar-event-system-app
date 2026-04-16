@@ -524,3 +524,11 @@
     -fx-background-color: #ff7a00;
     -fx-text-fill: white;
 }
+.table-view .column-header {
+    -fx-background-color: #f5f5f5;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+}

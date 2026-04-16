@@ -30,6 +30,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javafx.scene.control.DialogPane;
 
 public class EventDetailsController {
 
@@ -60,6 +61,7 @@ public class EventDetailsController {
     @FXML private TableColumn<Voucher, Double> colVoucherValue;
 
     private Event event;
+
 
     private final TicketTypeManager ticketTypeManager = new TicketTypeManager();
     private final VoucherManager voucherManager = new VoucherManager();
@@ -375,32 +377,26 @@ public class EventDetailsController {
         );
 
         DialogPane pane = dialog.getDialogPane();
-
         pane.setContent(content);
-
-        pane.lookup(".button-bar").setStyle(
-                "-fx-alignment: center;"
-        );
 
         ButtonType createButton = new ButtonType("Create", ButtonBar.ButtonData.OK_DONE);
         ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 
-        dialog.getDialogPane().getButtonTypes().addAll(createButton, cancelButton);
-        Node createBtn = pane.lookupButton(createButton);
+        pane.getButtonTypes().addAll(createButton, cancelButton);
 
+        Node createBtn = pane.lookupButton(createButton);
+        createBtn.setDisable(true);
         createBtn.setStyle(
                 "-fx-background-color: #ff7a00;" +
                         "-fx-text-fill: white;" +
                         "-fx-font-weight: bold;"
         );
-        ButtonBar buttonBar = (ButtonBar) pane.lookup(".button-bar");
-        buttonBar.setButtonOrder(ButtonBar.BUTTON_ORDER_NONE);
-        buttonBar.setStyle("-fx-alignment: center; -fx-padding: 10;");
 
-        Node createBtn = dialog.getDialogPane().lookupButton(createButton);
-        // Disable create button if fields empty
-        //Node createBtn = dialog.getDialogPane().lookupButton(createButton);
-        createBtn.setDisable(true);
+        ButtonBar buttonBar = (ButtonBar) pane.lookup(".button-bar");
+        if (buttonBar != null) {
+            buttonBar.setButtonOrder(ButtonBar.BUTTON_ORDER_NONE);
+            buttonBar.setStyle("-fx-alignment: center; -fx-padding: 10;");
+        }
 
         amountField.textProperty().addListener((obs, oldVal, newVal) ->
                 validateForm(nameField, emailField, amountField, selected, createBtn));
