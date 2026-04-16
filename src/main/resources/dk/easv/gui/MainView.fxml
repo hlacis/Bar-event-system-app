@@ -85,9 +85,9 @@
                     <Label fx:id="panelTitleLabel" styleClass="topbar-title"/>
 
                     <Region HBox.hgrow="ALWAYS"
-                            prefWidth="500"
-                            minWidth="500"
-                            maxWidth="500"/>
+                            prefWidth="460"
+                            minWidth="460"
+                            maxWidth="460"/>
 
                     <Region HBox.hgrow="NEVER" prefWidth="120"/>
                     <Button text="Log Out"
