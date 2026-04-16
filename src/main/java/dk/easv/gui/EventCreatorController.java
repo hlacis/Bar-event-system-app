@@ -138,8 +138,6 @@ public class EventCreatorController {
     @FXML
     public void initialize() {
 
-        // Populate time selection dropdowns for event creation/editing
-
         // Add hours (0–23)
         for (int i = 0; i < 24; i++) {
             startHourBox.getItems().add(i);

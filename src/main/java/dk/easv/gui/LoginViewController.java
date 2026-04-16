@@ -29,10 +29,6 @@ public class LoginViewController {
         String username = usernameField.getText() == null ? "" : usernameField.getText().trim();
         String password = passwordField.getText() == null ? "" : passwordField.getText().trim();
 
-        System.out.println("usernameField = " + usernameField);
-        System.out.println("passwordField = " + passwordField);
-        System.out.println("username text = [" + usernameField.getText() + "]");
-        System.out.println("password text = [" + passwordField.getText() + "]");
         try {
             Users loggedInUser = userManager.login(username, password);
             System.out.println("loggedInUser = " + loggedInUser);

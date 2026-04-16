@@ -1,19 +1,11 @@
-/* =========================================================
-   EASV Ticket gui — app.css (FULL FILE)
-   Copy + paste the whole thing into app.css
-========================================================= */
-
-/* =========================
-   Global
-========================= */
 .root {
     -fx-font-family: "System";
     -fx-background-color: #F4F7FB;
 }
 
-/* =========================
+/*
    Login Screen
-========================= */
+*/
 .login-root {
     -fx-background-color: #1F3F8A;
 }
@@ -51,7 +43,7 @@
     -fx-border-width: 1.5;
 }
 
-/* Login button (use styleClass="login-button") */
+/* Login button */
 .login-button {
     -fx-background-color: #FF7A18;
     -fx-background-insets: 0;
@@ -80,9 +72,9 @@
 .login-button:hover { -fx-background-color: #FF8F3D; }
 .login-button:pressed { -fx-background-color: #F06908; }
 
-/* =========================
+/*
    Buttons (global)
-========================= */
+ */
 .primary-button {
     -fx-background-color: #FF7A18;
     -fx-text-fill: white;
@@ -109,9 +101,9 @@
 
 .wide { -fx-max-width: Infinity; }
 
-/* =========================
+/*
    Admin Panel Layout
-========================= */
+ */
 .admin-root { -fx-background-color: #F4F7FB; }
 
 .sidebar {
@@ -293,7 +285,7 @@
 .users-scroll > .viewport { -fx-background-color: transparent; }
 .users-list { -fx-background-color: transparent; }
 
-/* Scrollbar (thin like Figma) */
+/* Scrollbar */
 .users-scroll .scroll-bar:vertical {
     -fx-background-color: transparent;
     -fx-pref-width: 10;
@@ -332,7 +324,7 @@
     -fx-alignment: CENTER_LEFT;
 }
 
-/* Make Edit look consistent inside coordinator card */
+/* Make Edit look Consistent inside coordinator card */
 .coordinator-card .edit-button {
     -fx-padding: 10 18 10 18;
     -fx-background-radius: 12;
@@ -361,7 +353,7 @@
     -fx-border-radius: 12;
 }
 /*
-   Assign Coordinators (Figma-like)
+   Assign Coordinators
 */
 
 .section-title {
@@ -428,7 +420,7 @@
     -fx-font-size: 13px;
 }
 
-/* Make readonly role field look like the Figma grey pill */
+/* Readonly role field */
 .readonly-field {
     -fx-background-color: #E9EEF6;
     -fx-border-color: transparent;

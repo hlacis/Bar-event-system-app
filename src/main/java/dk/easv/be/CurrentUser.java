@@ -15,10 +15,6 @@ public class CurrentUser {
         user = null;
     }
 
-    public static boolean isLoggedIn() {
-        return user != null;
-    }
-
     public static boolean isAdmin() {
         return user != null && "Admin".equalsIgnoreCase(user.getRole());
     }

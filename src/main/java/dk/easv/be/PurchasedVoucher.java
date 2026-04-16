@@ -16,7 +16,6 @@ public class PurchasedVoucher {
     public int getEventId() { return eventId; }
     public void setEventId(int eventId) { this.eventId = eventId; }
 
-    public int getVoucherTypeId() { return voucherTypeId; }
     public void setVoucherTypeId(int voucherTypeId) { this.voucherTypeId = voucherTypeId; }
 
     public String getCustomerName() { return customerName; }

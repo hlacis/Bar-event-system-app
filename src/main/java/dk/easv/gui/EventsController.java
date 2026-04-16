@@ -246,45 +246,6 @@ public class EventsController {
         }
     }
 
-    private void openAssignCoordinatorView() {
-        try {
-            Parent assignView = FXMLLoader.load(
-                    getClass().getResource("/dk/easv/gui/AssignCoordinatorsView.fxml")
-            );
-
-            StackPane contentHost = findContentHost(eventsList);
-            if (contentHost != null) {
-                contentHost.getChildren().setAll(assignView);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            showError("Could not open Assign Coordinators view.");
-        }
-    }
-
-    private void openEditView(Event event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/dk/easv/gui/EventsCreator.fxml")
-            );
-
-            Parent creatorView = loader.load();
-
-            EventCreatorController controller = loader.getController();
-            controller.setEvent(event);
-
-            StackPane contentHost = findContentHost(eventsList);
-            if (contentHost != null) {
-                contentHost.getChildren().setAll(creatorView);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            showError("Could not open edit view.");
-        }
-    }
-
     private void deleteEventFromDatabaseAndUI(Event event, HBox card, Button deleteBtn) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Delete Event");
@@ -346,14 +307,6 @@ public class EventsController {
             current = current.getParent();
         }
         return null;
-    }
-
-    private void showInfo(String action, String eventTitle) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(action);
-        alert.setHeaderText(null);
-        alert.setContentText(action + " clicked for: " + eventTitle);
-        alert.showAndWait();
     }
 
     private void showError(String message) {
