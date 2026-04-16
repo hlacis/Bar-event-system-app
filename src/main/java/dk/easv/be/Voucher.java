@@ -69,4 +69,5 @@ public class Voucher {
     public void setNote(String note) {
         this.note = note;
     }
+
 }

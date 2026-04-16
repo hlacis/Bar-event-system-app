@@ -19,6 +19,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import dk.easv.be.Ticket;
+import dk.easv.be.Voucher;
 
 public class TicketPDFGenerator {
 
@@ -125,5 +126,53 @@ public class TicketPDFGenerator {
         MatrixToImageWriter.writeToPath(matrix, "PNG", path);
 
         return filePath;
+    }
+
+    public void generateVoucherPDF(List<Voucher> vouchers, String eventName, String location, String time) throws Exception {
+
+        String folder = System.getProperty("user.home") + "/tickets/";
+        new File(folder).mkdirs();
+
+        String fileName = folder + "vouchers_" + System.currentTimeMillis() + ".pdf";
+
+        PdfWriter writer = new PdfWriter(fileName);
+        PdfDocument pdf = new PdfDocument(writer);
+        Document document = new Document(pdf);
+
+        for (int i = 0; i < vouchers.size(); i++) {
+
+            Voucher v = vouchers.get(i);
+
+            Table table = new Table(1)
+                    .useAllAvailableWidth()
+                    .setBorder(new SolidBorder(2))
+                    .setPadding(15);
+
+            table.addCell(new Cell()
+                    .add(new Paragraph("EASV VOUCHER")
+                            .setBold()
+                            .setFontSize(20)
+                            .setTextAlignment(TextAlignment.CENTER))
+                    .setBorder(Border.NO_BORDER));
+
+            table.addCell(new Cell()
+                    .add(new Paragraph("Event: " + eventName))
+                    .add(new Paragraph("Location: " + location))
+                    .add(new Paragraph("Time: " + time))
+                    .add(new Paragraph("Name: " + v.getName()))
+                    .add(new Paragraph("Note: " + v.getNote()))
+                    .setBorder(Border.NO_BORDER));
+
+            document.add(table);
+
+            // Add space or page break between vouchers
+            if (i < vouchers.size() - 1) {
+                document.add(new Paragraph("\n\n")); // each voucher on new page
+            }
+        }
+
+        document.close();
+
+        openPdf(new File(fileName));
     }
 }

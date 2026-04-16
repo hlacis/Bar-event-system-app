@@ -137,6 +137,12 @@
                             onAction="#handleDeleteVoucher"
                             styleClass="secondary-button"
                             prefWidth="75" minWidth="75" maxWidth="75" />
+
+                    <Button text="Print Vouchers"
+                            fx:id="printButton"
+                            onAction="#handlePrintVouchers"
+                            styleClass="button primary-button"/>
+
                 </HBox>
 
                 <TableView fx:id="voucherTable" prefHeight="180" minHeight="180" maxHeight="180">

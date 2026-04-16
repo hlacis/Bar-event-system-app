@@ -14,14 +14,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -30,7 +23,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javafx.scene.control.DialogPane;
 
 public class EventDetailsController {
 
@@ -61,6 +53,7 @@ public class EventDetailsController {
     @FXML private TableColumn<Voucher, Integer> colVoucherQuantity;
     @FXML private TableColumn<Voucher, Integer> colVoucherLeft;
     @FXML private TableColumn<Voucher, String> colVoucherNote;
+    @FXML private Button printButton;
 
     private Event event;
 
@@ -487,6 +480,124 @@ public class EventDetailsController {
 
         } catch (Exception e) {
             createBtn.setDisable(true);
+        }
+    }
+
+    @FXML
+    private void handlePrintVouchers() {
+
+        Voucher selected = voucherTable.getSelectionModel().getSelectedItem();
+
+        if (selected == null) {
+            showError("Please select a voucher");
+            return;
+        }
+
+        // Create dialog
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Creating Voucher");
+
+        TextField nameField = new TextField();
+        nameField.setPromptText("Name");
+
+        TextField emailField = new TextField();
+        emailField.setPromptText("Email");
+
+        TextField amountField = new TextField();
+        amountField.setPromptText("Amount");
+
+        VBox content = new VBox(10,
+                new Label("Enter customer info"),
+                nameField,
+                emailField,
+                amountField
+        );
+
+        content.setStyle(
+                "-fx-padding: 20;" +
+                        "-fx-background-color: white;" +
+                        "-fx-background-radius: 10;"
+        );
+
+        dialog.getDialogPane().setContent(content);
+
+        ButtonType createButton = new ButtonType("Create", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        dialog.getDialogPane().getButtonTypes().addAll(createButton, cancelButton);
+
+        Node createBtn = dialog.getDialogPane().lookupButton(createButton);
+        createBtn.setDisable(true);
+        printButton.getStyleClass().add("print-button");
+
+        amountField.textProperty().addListener((obs, oldVal, newVal) -> {
+            try {
+                int amount = Integer.parseInt(newVal);
+
+                boolean invalid =
+                        amount <= 0 ||
+                                nameField.getText().isBlank() ||
+                                emailField.getText().isBlank() ||
+                                amount > selected.getTotal();
+
+                createBtn.setDisable(invalid);
+
+            } catch (Exception e) {
+                createBtn.setDisable(true);
+            }
+        });
+
+        Optional<ButtonType> result = dialog.showAndWait();
+
+        if (result.isPresent() && result.get() == createButton) {
+            try {
+                String name = nameField.getText();
+                String email = emailField.getText();
+                int amount = Integer.parseInt(amountField.getText());
+                if (amount > selected.getVouchersLeft()) {
+                    showError("Not enough vouchers available");
+                    return;
+                }
+
+                VoucherManager manager = new VoucherManager();
+                List<Voucher> vouchers = new ArrayList<>();
+
+                for (int i = 0; i < amount; i++) {
+
+                    Voucher v = new Voucher(
+                            event.getId(),
+                            name,
+                            selected.getTotal(),
+                            selected.getVouchersLeft(),
+                            selected.getNote()
+                    );
+
+                    manager.createVoucher(v);
+                    vouchers.add(v);
+                }
+
+                selected.setVouchersLeft(selected.getVouchersLeft() - amount);
+                voucherManager.updateVoucher(selected);
+
+                // PDF generation
+                TicketPDFGenerator generator = new TicketPDFGenerator();
+
+                String eventName = event.getName();
+                String location = event.getLocation();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm");
+
+                String start = event.getStartTime().format(formatter);
+                String end = event.getEndTime().format(formatter);
+                String time = start + " - " + end;
+
+                generator.generateVoucherPDF(vouchers, eventName, location, time);
+
+                //showInfo("Success", amount + " vouchers created");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                showError("Could not create vouchers");
+            }
         }
     }
 
